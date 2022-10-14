@@ -79,3 +79,8 @@ main {
 .pages .page.active {
     display: block;
 }
+
+#homeimage {
+    display: flex;
+    align-items: center;
+}
