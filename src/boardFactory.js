@@ -19,13 +19,16 @@ const boardFactory = () => {
   };
   // now gotta create pieces for each team
   const pieceFactory = (name, color) => {
-    const piece = {};
+    const piece = {}
     piece.color = color;
     piece.type = name;
     piece.alive = true;
     return piece;
   };
-
-  return { playerFactory, pieceFactory, squares };
+  // a function to set piece place
+  const setPieceTo=(pieceObj, xSquare, ySquare)=> {
+    squares[xSquare][ySquare]=pieceObj;
+  }
+  return { playerFactory, pieceFactory, squares, setPieceTo };
 };
 export default boardFactory;
