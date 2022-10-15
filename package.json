@@ -1,19 +1,30 @@
 {
-  "name": "explosive-chess-game",
+  "name": "y",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chess, but each capture creates an explosion, eliminating both white and black pieces. You can play It through here (git deploy)",
   "main": "index.js",
+  "module": "main.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "D": "^1.0.0",
-    "eslint-config-prettier": "^8.5.0"
+    "eslint-config-prettier": "^8.5.0",
+    "esm": "^3.2.25"
   },
   "devDependencies": {
     "jest": "^29.2.0",
     "webpack": "^5.74.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThiagoJoseSousa/Explosive-Chess-Game.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ThiagoJoseSousa/Explosive-Chess-Game/issues"
+  },
+  "homepage": "https://github.com/ThiagoJoseSousa/Explosive-Chess-Game#readme"
 }
