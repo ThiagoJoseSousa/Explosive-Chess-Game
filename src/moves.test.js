@@ -2,7 +2,7 @@ import possibleMoves from "./moves";
 import boardFactory from "./boardFactory";
 
 let board=boardFactory();
-test.skip ('check if possibleMoves is returning the array with right coordinates', ()=>{
+test ('check if possibleMoves is returning the array with right coordinates', ()=>{
     let knight= {}
     knight.type='knight'
     knight.coordinates=[0,0]
