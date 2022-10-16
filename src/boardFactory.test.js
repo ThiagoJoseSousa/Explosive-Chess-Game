@@ -19,3 +19,4 @@ test ("pieces can be placed", ()=>{
   board.setPieceTo(board.pieceFactory("knight", "white"), 0,0)
   expect(typeof board.squares[0][0]).toBe("object")
 })
+

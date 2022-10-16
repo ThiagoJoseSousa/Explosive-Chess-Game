@@ -27,6 +27,7 @@ const boardFactory = () => {
   };
   // a function to set piece place
   const setPieceTo=(pieceObj, xSquare, ySquare)=> {
+    pieceObj.coordinates=[xSquare,ySquare]
     squares[xSquare][ySquare]=pieceObj;
   }
   return { playerFactory, pieceFactory, squares, setPieceTo };
