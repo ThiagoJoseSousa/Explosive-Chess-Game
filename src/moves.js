@@ -10,7 +10,7 @@ const possibleMoves = (clickedPiece, board) => {
     knight: function () {
       //coords: x+1, y+2. x+2,y+1. x-1,y+2. x-2, y+1. x+1, y-2. x+2, y-1. x-2, y-1. x-1, y-2.
       // check if square is inside the board and if there's no piece of the same color on the place.
-      if (x + 1 <= 7 && y + 2 <= 7 ) {
+      if (x + 1 <= 7 && y + 2 <= 7) {
         const newX = x + 1;
         const newY = y + 2;
         if (
@@ -43,7 +43,7 @@ const possibleMoves = (clickedPiece, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (y + 1 <= 7 && x - 2 >= 0 ) {
+      if (y + 1 <= 7 && x - 2 >= 0) {
         const newX = x - 2;
         const newY = y + 1;
         if (
@@ -76,7 +76,7 @@ const possibleMoves = (clickedPiece, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if ( x - 2 >= 0 && y - 1 >= 0) {
+      if (x - 2 >= 0 && y - 1 >= 0) {
         const newX = x - 2;
         const newY = y - 1;
         if (
@@ -249,72 +249,125 @@ const possibleMoves = (clickedPiece, board) => {
     },
     bishop: function () {
       //must create 4 loops for each bishop direction
-      let counter=1;
+      let counter = 1;
       //up-right
-      while (x+counter<=7 && y+counter<=7) {
-        let newX=x+counter;
-        let newY=y+counter;
-        if (board.squares[newX][newY]===undefined){
-          counter++
-          possibilities.push([newX,newY])
-        } else if (board.squares[newX][newY].color===clickedPiece.color) {
-          counter=8;
+      while (x + counter <= 7 && y + counter <= 7) {
+        let newX = x + counter;
+        let newY = y + counter;
+        if (board.squares[newX][newY] === undefined) {
+          counter++;
+          possibilities.push([newX, newY]);
+        } else if (board.squares[newX][newY].color === clickedPiece.color) {
+          counter = 8;
         } else {
-          possibilities.push([newY,newX])
-          counter=8;
+          possibilities.push([newY, newX]);
+          counter = 8;
         }
       }
-      counter=1;
+      counter = 1;
       //right-down
-      while (x+counter<=7 && y-counter>=0) {
-        let newX=x+counter;
-        let newY=y-counter;
-        if (board.squares[newX][newY]===undefined){
-          counter++
-          possibilities.push([newX,newY])
-        } else if (board.squares[newX][newY].color===clickedPiece.color) {
-          counter=8;
+      while (x + counter <= 7 && y - counter >= 0) {
+        let newX = x + counter;
+        let newY = y - counter;
+        if (board.squares[newX][newY] === undefined) {
+          counter++;
+          possibilities.push([newX, newY]);
+        } else if (board.squares[newX][newY].color === clickedPiece.color) {
+          counter = 8;
         } else {
-          possibilities.push([newY,newX])
-          counter=8;
+          possibilities.push([newY, newX]);
+          counter = 8;
         }
       }
-      counter=1;
-       //left-up
-      while (x-counter>=0 && y+counter<=7) {
-        let newX=x+counter;
-        let newY=y-counter;
-        if (board.squares[newX][newY]===undefined){
-          counter++
-          possibilities.push([newX,newY])
-        } else if (board.squares[newX][newY].color===clickedPiece.color) {
-          counter=8;
+      counter = 1;
+      //left-up
+      while (x - counter >= 0 && y + counter <= 7) {
+        let newX = x + counter;
+        let newY = y - counter;
+        if (board.squares[newX][newY] === undefined) {
+          counter++;
+          possibilities.push([newX, newY]);
+        } else if (board.squares[newX][newY].color === clickedPiece.color) {
+          counter = 8;
         } else {
-          possibilities.push([newY,newX])
-          counter=8;
+          possibilities.push([newY, newX]);
+          counter = 8;
         }
       }
-      counter=1;
+      counter = 1;
       //left-down
-      while (x-counter>=0 && y-counter>=0) {
-        let newX=x+counter;
-        let newY=y-counter;
-        if (board.squares[newX][newY]===undefined){
-          possibilities.push([newX,newY])
-          counter++
-        } else if (board.squares[newX][newY].color===clickedPiece.color) {
-          counter=8;
+      while (x - counter >= 0 && y - counter >= 0) {
+        let newX = x + counter;
+        let newY = y - counter;
+        if (board.squares[newX][newY] === undefined) {
+          possibilities.push([newX, newY]);
+          counter++;
+        } else if (board.squares[newX][newY].color === clickedPiece.color) {
+          counter = 8;
         } else {
-          possibilities.push([newY,newX])
-          counter=8;
+          possibilities.push([newY, newX]);
+          counter = 8;
         }
       }
     },
-    queen: function(){
+    queen: function () {
       this.rook();
       this.bishop();
-    }
+    },
+    pawn: function () {
+      //white and black moves different directions
+      if (clickedPiece.color === "white") {
+        //if at starting point, can go 2 squares up
+        if (clickedPiece.start) {
+          possibilities.push([x, y + 2]);
+          //setPiece should mark the y+1 square to make the en passant a possibility
+        }
 
+        //moving upwards
+        if (y + 1 <= 7) {
+          if (board.squares[x][y + 1] === undefined) {
+            possibilities.push([x, y + 1]);
+          }
+          //attacking other pieces
+          if (
+            board.squares[x + 1][y + 1] !== undefined &&
+            board.squares[x + 1][y + 1].color !== "white"
+          ) {
+            possibilities.push([x + 1, y + 1]);
+          }
+          if (
+            board.squares[x - 1][y + 1] !== undefined &&
+            board.squares[x + 1][y + 1].color !== "white"
+          ) {
+            possibilities.push([x - 1, y + 1]);
+          }
+        }
+      } else {
+        //else means color is black
+        if (clickedPiece.start) {
+          possibilities.push([x, y - 2]);
+        }
+
+        if (y - 1 >= 0) {
+          if (board.squares[x][y - 1] === undefined) {
+            possibilities.push([x, y - 1]);
+          }
+          //attacking other pieces
+          if (
+            board.squares[x + 1][y - 1] !== undefined &&
+            board.squares[x + 1][y - 1].color !== "black"
+          ) {
+            possibilities.push([x + 1, y - 1]);
+          }
+          if (
+            board.squares[x - 1][y - 1] !== undefined &&
+            board.squares[x - 1][y - 1].color !== "black"
+          ) {
+            possibilities.push([x - 1, y - 1]);
+          }
+        }
+      }
+    },
   };
   identifyMove[clickedPiece.type]();
 

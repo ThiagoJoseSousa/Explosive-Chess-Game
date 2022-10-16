@@ -19,17 +19,21 @@ const boardFactory = () => {
   };
   // now gotta create pieces for each team
   const pieceFactory = (name, color) => {
-    const piece = {}
+    const piece = {};
     piece.color = color;
     piece.type = name;
     piece.alive = true;
     return piece;
   };
   // a function to set piece place
-  const setPieceTo=(pieceObj, xSquare, ySquare)=> {
-    pieceObj.coordinates=[xSquare,ySquare]
-    squares[xSquare][ySquare]=pieceObj;
-  }
+  const setPieceTo = (pieceObj, xSquare, ySquare, start) => {
+    pieceObj.coordinates = [xSquare, ySquare];
+    //marks if the piece is on start square
+    if (start) {
+      pieceObj.start = true;
+    }
+    squares[xSquare][ySquare] = pieceObj;
+  };
   return { playerFactory, pieceFactory, squares, setPieceTo };
 };
 export default boardFactory;

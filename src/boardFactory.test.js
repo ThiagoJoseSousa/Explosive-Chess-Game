@@ -15,8 +15,7 @@ test("pieces are created", () => {
   expect(board.pieceFactory("knight", "white").color).toBe("white");
 });
 
-test ("pieces can be placed", ()=>{
-  board.setPieceTo(board.pieceFactory("knight", "white"), 0,0)
-  expect(typeof board.squares[0][0]).toBe("object")
-})
-
+test("pieces can be placed", () => {
+  board.setPieceTo(board.pieceFactory("knight", "white"), 0, 0);
+  expect(typeof board.squares[0][0]).toBe("object");
+});
