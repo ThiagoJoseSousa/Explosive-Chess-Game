@@ -247,6 +247,73 @@ const possibleMoves = (clickedPiece, board) => {
         }
       }
     },
+    bishop: function () {
+      //must create 4 loops for each bishop direction
+      let counter=1;
+      //up-right
+      while (x+counter<=7 && y+counter<=7) {
+        let newX=x+counter;
+        let newY=y+counter;
+        if (board.squares[newX][newY]===undefined){
+          counter++
+          possibilities.push([newX,newY])
+        } else if (board.squares[newX][newY].color===clickedPiece.color) {
+          counter=8;
+        } else {
+          possibilities.push([newY,newX])
+          counter=8;
+        }
+      }
+      counter=1;
+      //right-down
+      while (x+counter<=7 && y-counter>=0) {
+        let newX=x+counter;
+        let newY=y-counter;
+        if (board.squares[newX][newY]===undefined){
+          counter++
+          possibilities.push([newX,newY])
+        } else if (board.squares[newX][newY].color===clickedPiece.color) {
+          counter=8;
+        } else {
+          possibilities.push([newY,newX])
+          counter=8;
+        }
+      }
+      counter=1;
+       //left-up
+      while (x-counter>=0 && y+counter<=7) {
+        let newX=x+counter;
+        let newY=y-counter;
+        if (board.squares[newX][newY]===undefined){
+          counter++
+          possibilities.push([newX,newY])
+        } else if (board.squares[newX][newY].color===clickedPiece.color) {
+          counter=8;
+        } else {
+          possibilities.push([newY,newX])
+          counter=8;
+        }
+      }
+      counter=1;
+      //left-down
+      while (x-counter>=0 && y-counter>=0) {
+        let newX=x+counter;
+        let newY=y-counter;
+        if (board.squares[newX][newY]===undefined){
+          possibilities.push([newX,newY])
+          counter++
+        } else if (board.squares[newX][newY].color===clickedPiece.color) {
+          counter=8;
+        } else {
+          possibilities.push([newY,newX])
+          counter=8;
+        }
+      }
+    },
+    queen: function(){
+      this.rook();
+      this.bishop();
+    }
 
   };
   identifyMove[clickedPiece.type]();
