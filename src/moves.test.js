@@ -41,5 +41,24 @@ test("check if pawn is alright", () => {
   board.squares[4][4] = pawn2;
   board.squares[2][4] = pawn2;
   board.squares[3][4] = pawn2;
-  expect(possibleMoves(pawn, board)).toEqual([[3, 4]]);
+  expect(possibleMoves(pawn, board)).toEqual(expect.arrayContaining([[4, 4]]));
+});
+
+test.skip("king can castle", () => {
+  let king = {};
+  king.type = "king";
+  king.coordinates = [4, 0];
+  king.color = "white";
+  king.start = true;
+
+  let rook = {};
+  rook.type = "rook";
+  rook.coordinates = [0, 0];
+  rook.color = "white";
+  rook.start = true;
+
+  board.squares[0][0] = rook;
+  board.squares[4][0] = king;
+
+  expect(possibleMoves(king, board)).toEqual(expect.arrayContaining([[2, 0]]));
 });

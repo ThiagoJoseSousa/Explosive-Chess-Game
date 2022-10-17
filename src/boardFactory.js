@@ -22,7 +22,6 @@ const boardFactory = () => {
     const piece = {};
     piece.color = color;
     piece.type = name;
-    piece.alive = true;
     return piece;
   };
   // a function to set piece place

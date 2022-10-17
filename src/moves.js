@@ -4,8 +4,7 @@ const possibleMoves = (clickedPiece, board) => {
   let x = clickedPiece.coordinates[0];
   let y = clickedPiece.coordinates[1];
   let possibilities = [];
-  // Switch is replaced by an obj, since we have the string name
-  // Should lessen the range of ifs depending if im just summing or subtracting
+// There's a big object below containing rules that runs depending on the clicked piece.
   const identifyMove = {
     knight: function () {
       //coords: x+1, y+2. x+2,y+1. x-1,y+2. x-2, y+1. x+1, y-2. x+2, y-1. x-2, y-1. x-1, y-2.
@@ -100,6 +99,28 @@ const possibleMoves = (clickedPiece, board) => {
       }
     },
     king: function () {
+      //castling possibility: if both king and rook is at start position and there's no pieces between them
+
+      if (
+        clickedPiece.start &&
+        board.squares[x + 3][y] !== undefined &&
+        board.squares[x + 3][y].start &&
+        board.squares[x + 1][y] === undefined &&
+        board.squares[x + 2][y] === undefined
+      ) {
+        possibilities.push([x + 2, y]);
+      }
+      if (
+        clickedPiece.start &&
+        board.squares[x - 4][y] !== undefined &&
+        board.squares[x - 4][y].start &&
+        board.squares[x - 1][y] === undefined &&
+        board.squares[x - 2][y] === undefined &&
+        board.squares[x - 3][y] === undefined
+      ) {
+        possibilities.push([x - 2, y]);
+      }
+
       //coords: right side x+1 y+2. x+1 y-2. x+2 y+1. x+2 y-1. leftside x-1 y+2. x-2 y+1. x-1 y-2. //x-2 y-1 (i'm using // to keep track)
       if (x + 1 <= 7 && y + 2 <= 7) {
         const newX = x + 1;
@@ -317,13 +338,26 @@ const possibleMoves = (clickedPiece, board) => {
     pawn: function () {
       //white and black moves different directions
       if (clickedPiece.color === "white") {
+        // en passant rule, if the pawn at your side has pasant property, you can capture It.
+        if (
+          board.squares[x + 1][y] !== undefined &&
+          board.squares[x + 1][y].enpasant
+        ) {
+          possibilities.push([x + 1, y + 1]);
+        }
+        if (
+          board.squares[x - 1][y] !== undefined &&
+          board.squares[x - 1][y].enpasant
+        ) {
+          possibilities.push([x - 1, y + 1]);
+        }
         //if at starting point, can go 2 squares up
-        if (clickedPiece.start) {
+        if (clickedPiece.start && board.squares[x][y+1]===undefined && board.squares[x][y+2]===undefined) {
           possibilities.push([x, y + 2]);
           //setPiece should mark the y+1 square to make the en passant a possibility
         }
 
-        //moving upwards
+        //white moving upwards
         if (y + 1 <= 7) {
           if (board.squares[x][y + 1] === undefined) {
             possibilities.push([x, y + 1]);
@@ -344,7 +378,21 @@ const possibleMoves = (clickedPiece, board) => {
         }
       } else {
         //else means color is black
-        if (clickedPiece.start) {
+        // en passant rule, if the pawn at your side has pasant property, you can capture It.
+        if (
+          board.squares[x + 1][y] !== undefined &&
+          board.squares[x + 1][y].enpasant
+        ) {
+          possibilities.push([x + 1, y - 1]);
+        }
+        if (
+          board.squares[x - 1][y] !== undefined &&
+          board.squares[x - 1][y].enpasant
+        ) {
+          possibilities.push([x - 1, y - 1]);
+        }
+        // starting pawn can move 2 places
+        if (clickedPiece.start && board.squares[x][y-1]===undefined && board.squares[x][y-2]===undefined) {
           possibilities.push([x, y - 2]);
         }
 
