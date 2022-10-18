@@ -4,7 +4,7 @@ const possibleMoves = (clickedPiece, board) => {
   let x = clickedPiece.coordinates[0];
   let y = clickedPiece.coordinates[1];
   let possibilities = [];
-// There's a big object below containing rules that runs depending on the clicked piece.
+  // There's a big object below containing rules that runs depending on the clicked piece.
   const identifyMove = {
     knight: function () {
       //coords: x+1, y+2. x+2,y+1. x-1,y+2. x-2, y+1. x+1, y-2. x+2, y-1. x-2, y-1. x-1, y-2.
@@ -352,7 +352,11 @@ const possibleMoves = (clickedPiece, board) => {
           possibilities.push([x - 1, y + 1]);
         }
         //if at starting point, can go 2 squares up
-        if (clickedPiece.start && board.squares[x][y+1]===undefined && board.squares[x][y+2]===undefined) {
+        if (
+          clickedPiece.start &&
+          board.squares[x][y + 1] === undefined &&
+          board.squares[x][y + 2] === undefined
+        ) {
           possibilities.push([x, y + 2]);
           //setPiece should mark the y+1 square to make the en passant a possibility
         }
@@ -392,7 +396,11 @@ const possibleMoves = (clickedPiece, board) => {
           possibilities.push([x - 1, y - 1]);
         }
         // starting pawn can move 2 places
-        if (clickedPiece.start && board.squares[x][y-1]===undefined && board.squares[x][y-2]===undefined) {
+        if (
+          clickedPiece.start &&
+          board.squares[x][y - 1] === undefined &&
+          board.squares[x][y - 2] === undefined
+        ) {
           possibilities.push([x, y - 2]);
         }
 

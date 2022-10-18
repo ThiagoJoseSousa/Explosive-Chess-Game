@@ -1,3 +1,5 @@
+import matchController from "./matchController.js";
+
 window.onload = () => {
   const tab_switchers = document.querySelectorAll("[data-switcher]");
   for (let i = 0; i < tab_switchers.length; i++) {
@@ -21,3 +23,7 @@ function switchPage(page_id) {
   );
   next_page.classList.add("active");
 }
+
+let initialize = matchController();
+initialize.placePieces();
+initialize.renderBoard();

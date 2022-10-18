@@ -14,7 +14,7 @@ const boardFactory = () => {
     const player = {};
     player.color = color;
     player.human = false;
-    // i will make an outer variable to take care of changing turns.
+    // i will make an outter variable to take care of changing turns.
     return player;
   };
   // now gotta create pieces for each team
@@ -22,6 +22,7 @@ const boardFactory = () => {
     const piece = {};
     piece.color = color;
     piece.type = name;
+    piece.img = `../public/images/pieces/${color} ${name}.png`;
     return piece;
   };
   // a function to set piece place
