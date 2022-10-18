@@ -38,5 +38,9 @@ function initializeBoard(e) {
   initialize.placePieces();
   initialize.renderBoard();
   document.getElementById("sidechoice").classList.add("hide");
-  initialize.chooseSide(e.target.attributes.value.value); // acess clicked button and pass the selected choice
+  let players=initialize.chooseSide(e.target.attributes.value.value); // acess clicked button and pass the selected choice
+  // adds listeners to the human pieces.
+  if (players.player1.human) {
+    initialize.playerCanClick('white')
+  } else {initialize.playerCanClick('black')}
 }

@@ -50,7 +50,7 @@ const matchController = () => {
     //create a variable to fill square colors;
     let green = false;
     //creates each row
-    gameBoard.forEach((row) => {
+    gameBoard.forEach((row, x) => {
       let tableRow = document.createElement("tr");
       tableRow.setAttribute("class", "tableRow");
 
@@ -65,6 +65,8 @@ const matchController = () => {
           image.setAttribute("class", "pieceImg");
           image.setAttribute("src", square.img);
           image.setAttribute("alt", `${square.color} ${square.type}`);
+          //identify what color the td is
+          cell.setAttribute(`data-${square.color}`,'true')
           cell.appendChild(image);
         }
         //make squares green or white
@@ -95,15 +97,40 @@ const matchController = () => {
     let player2 = game.playerFactory("black");
     if (side === "1") {
       player1.human = true;
-      console.log("You clicked white!");
     } else {
       player2.human = true;
     }
     return { player1, player2 };
   };
   // we'll now start the turns.
+  const startTurns= (player1,player2) =>{
+    let turn=1;
+    //while king is alive
+    while (player1.king && player2.king){
+      if (turn===1 && player1.human) { // i can check who is human just one time. 
 
-  return { placePieces, renderBoard, chooseSide };
+        //white can move
+        turn=2;
+      } else if (player2.human){
+        //black can move
+        turn=1;} else {
+          //if its computer turn just skip
+          turn=1;}
+    }
+
+  }
+  //add listeners to the player pieces
+  const playerCanClick= (color) => {
+        let pieces= document.querySelectorAll(`[data-${color}='true']`)
+        pieces.forEach((item)=> {
+          item.addEventListener('click', ()=> {
+            console.log("I'm working!")
+          })
+        item.classList.add('active')
+        })
+
+  }
+  return { placePieces, renderBoard, chooseSide, playerCanClick };
 };
 
 export default matchController;

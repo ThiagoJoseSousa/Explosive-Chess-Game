@@ -38,6 +38,6 @@
     display:none;
   }
 
-  .boardSquare img:hover{
+  .boardSquare.active img:hover{
     cursor:pointer;
   }
