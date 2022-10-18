@@ -23,7 +23,20 @@ function switchPage(page_id) {
   );
   next_page.classList.add("active");
 }
+let whiteButton = document.getElementById("whitecolor");
+whiteButton.addEventListener("click", (e) => {
+  initializeBoard(e);
+});
 
-let initialize = matchController();
-initialize.placePieces();
-initialize.renderBoard();
+let blackButton = document.getElementById("blackcolor");
+blackButton.addEventListener("click", (e) => {
+  initializeBoard(e);
+});
+
+function initializeBoard(e) {
+  let initialize = matchController();
+  initialize.placePieces();
+  initialize.renderBoard();
+  document.getElementById("sidechoice").classList.add("hide");
+  initialize.chooseSide(e.target.attributes.value.value); // acess clicked button and pass the selected choice
+}

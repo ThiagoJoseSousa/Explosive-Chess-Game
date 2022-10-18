@@ -43,8 +43,8 @@ const matchController = () => {
     game.setPieceTo(game.pieceFactory("queen", "white"), 3, 0);
     game.setPieceTo(game.pieceFactory("queen", "black"), 3, 7);
     //putting kings on board
-    game.setPieceTo(game.pieceFactory("king", "white"), 4, 0);
-    game.setPieceTo(game.pieceFactory("king", "black"), 4, 7);
+    game.setPieceTo(game.pieceFactory("king", "white"), 4, 0, true);
+    game.setPieceTo(game.pieceFactory("king", "black"), 4, 7, true);
   };
   const renderBoard = () => {
     //create a variable to fill square colors;
@@ -89,7 +89,21 @@ const matchController = () => {
       document.getElementById("boardSquares").appendChild(tableRow);
     });
   };
-  return { placePieces, renderBoard };
+  //here the player will chose their color at the start of the game
+  const chooseSide = (side) => {
+    let player1 = game.playerFactory("white");
+    let player2 = game.playerFactory("black");
+    if (side === "1") {
+      player1.human = true;
+      console.log("You clicked white!");
+    } else {
+      player2.human = true;
+    }
+    return { player1, player2 };
+  };
+  // we'll now start the turns.
+
+  return { placePieces, renderBoard, chooseSide };
 };
 
 export default matchController;
