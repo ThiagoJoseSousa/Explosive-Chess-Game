@@ -37,10 +37,11 @@ function initializeBoard(e) {
   let initialize = matchController();
   initialize.placePieces();
   initialize.renderBoard();
+  console.log ('testing gameboard 0 0 ',initialize.game.squares[0][0])
   document.getElementById("sidechoice").classList.add("hide");
   let players=initialize.chooseSide(e.target.attributes.value.value); // acess clicked button and pass the selected choice
   // adds listeners to the human pieces.
   if (players.player1.human) {
-    initialize.playerCanClick('white')
-  } else {initialize.playerCanClick('black')}
+    initialize.playerCanClick('white',initialize.game)
+  } else {initialize.playerCanClick('black',initialize.game)}
 }

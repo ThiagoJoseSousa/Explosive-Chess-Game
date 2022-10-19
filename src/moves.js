@@ -1,9 +1,17 @@
 // this module will run after clicking on an object. It'll calculate where the obj can go.
 
-const possibleMoves = (clickedPiece, board) => {
+const possibleMoves = (coords, board) => {
+  /*
   let x = clickedPiece.coordinates[0];
   let y = clickedPiece.coordinates[1];
+   */
   let possibilities = [];
+  let x=parseInt(coords[0],10);
+  let y=parseInt(coords[1],10);;
+  console.log(typeof y, `${y}`, 'testing type of y ')
+  
+  let clickedPiece=board.squares[x][y];
+  console.log(clickedPiece, 'testing board values')
   // There's a big object below containing rules that runs depending on the clicked piece.
   const identifyMove = {
     knight: function () {

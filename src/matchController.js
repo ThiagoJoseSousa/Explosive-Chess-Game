@@ -1,4 +1,5 @@
 import boardFactory from "./boardFactory.js";
+import possibleMoves from "./moves.js";
 // This module will start the match, say whose turn is, and tell wether a move is an attack or not. And end.
 
 //take the user input to decide which side to begin
@@ -66,7 +67,7 @@ const matchController = () => {
           image.setAttribute("src", square.img);
           image.setAttribute("alt", `${square.color} ${square.type}`);
           //identify what color the td is
-          cell.setAttribute(`data-${square.color}`,'true')
+          cell.setAttribute(`data-${square.color}`,`${x}${y}`)
           cell.appendChild(image);
         }
         //make squares green or white
@@ -120,17 +121,17 @@ const matchController = () => {
 
   }
   //add listeners to the player pieces
-  const playerCanClick= (color) => {
-        let pieces= document.querySelectorAll(`[data-${color}='true']`)
-        pieces.forEach((item)=> {
-          item.addEventListener('click', ()=> {
-            console.log("I'm working!")
+  const playerCanClick= (color,board) => {
+        let pieces= document.querySelectorAll(`[data-${color}]`)
+        pieces.forEach((square)=> {
+          square.addEventListener('click', ()=> {
+            console.log(possibleMoves(square.dataset[`${color}`],board))
           })
-        item.classList.add('active')
+        square.classList.add('active')
         })
 
   }
-  return { placePieces, renderBoard, chooseSide, playerCanClick };
+  return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };
 
 export default matchController;
