@@ -46,4 +46,12 @@ td>img {
     cursor:pointer;
   }
 
+  .grey {
+    border-style: double;
+    opacity: 65%;
+    background-color: gray;
+    width: 40%;
+    height:40%;
+  }
+
   

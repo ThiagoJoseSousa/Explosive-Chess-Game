@@ -14,7 +14,7 @@ const boardFactory = () => {
     const player = {};
     player.color = color;
     player.human = false;
-    player.king=true;
+    player.king = true;
     // i will make an outter variable to take care of changing turns.
     return player;
   };

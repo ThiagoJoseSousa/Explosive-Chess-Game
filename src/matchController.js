@@ -59,6 +59,8 @@ const matchController = () => {
       for (let y = 0; y <= 7; y++) {
         let cell = document.createElement("td");
         cell.setAttribute("class", "boardSquare");
+        //all squares must have coords!
+        cell.setAttribute(`data-coords`, `${x}${y}`);
         // if there's a piece, add piece's image to it
         let square = row[y];
         if (square !== undefined) {
@@ -67,8 +69,7 @@ const matchController = () => {
           image.setAttribute("src", square.img);
           image.setAttribute("alt", `${square.color} ${square.type}`);
           //identify what color the td is
-          cell.setAttribute(`data-${square.color}`,'')
-          cell.setAttribute(`data-coords`, `${x}${y}`)
+          cell.setAttribute(`data-${square.color}`, "");
           cell.appendChild(image);
         }
         //make squares green or white
@@ -105,40 +106,53 @@ const matchController = () => {
     return { player1, player2 };
   };
   // we'll now start the turns.
-  const startTurns= (player1,player2) =>{
-    let turn=1;
+  const startTurns = (player1, player2) => {
+    let turn = 1;
     //while king is alive
-    while (player1.king && player2.king){
-      if (turn===1 && player1.human) { // i can check who is human just one time. 
+    while (player1.king && player2.king) {
+      if (turn === 1 && player1.human) {
+        // i can check who is human just one time.
 
         //white can move
-        turn=2;
-      } else if (player2.human){
+        turn = 2;
+      } else if (player2.human) {
         //black can move
-        turn=1;} else {
-          //if its computer turn just skip
-          turn=1;}
+        turn = 1;
+      } else {
+        //if its computer turn just skip
+        turn = 1;
+      }
     }
-
-  }
+  };
   //add listeners to the player pieces
-  const playerCanClick= (color) => {
-        let pieces= document.querySelectorAll(`[data-${color}]`)
-        pieces.forEach((square)=> {
-          square.addEventListener('click', getPossibleMoves)
-        square.classList.add('active')
-        })
+  const playerCanClick = (color) => {
+    let pieces = document.querySelectorAll(`[data-${color}]`);
+    pieces.forEach((square) => {
+      square.addEventListener("click", getPossibleMoves);
+      square.classList.add("active");
+    });
+  };
 
-      }
-      
-      //after player click: return possible moves. Can't be an anonymous func because needs to be removed
-      const getPossibleMoves= (e)=> {
-        //sends the coordinates (and game) to possible moves
-  
-        const availableSquares=possibleMoves(e.target.dataset.coords,game)
-        console.log(availableSquares) 
-      }
-      return { placePieces, renderBoard, chooseSide, playerCanClick, game };
+  //after player click: return possible moves. Can't be an anonymous func because needs to be removed
+  const getPossibleMoves = (e) => {
+    //sends the coordinates (and game) to possible moves
+
+    const availableSquares = possibleMoves(e.target.dataset.coords, game);
+    displayPossibleMoves(availableSquares);
+  };
+  const displayPossibleMoves = (availableSquares) => {
+    // each availablSsquares item is the possibility, second bracket is 0 for x or 1 for y
+    availableSquares.forEach((coords) => {
+      //creates a div that will make available squares grey
+      let grey = document.createElement("div");
+      grey.classList.add("grey");
+
+      document
+        .querySelector(`[data-coords="${coords[0]}${coords[1]}"]`)
+        .appendChild(grey);
+    });
+  };
+  return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };
 
 export default matchController;
