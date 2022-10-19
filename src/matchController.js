@@ -125,7 +125,9 @@ const matchController = () => {
         let pieces= document.querySelectorAll(`[data-${color}]`)
         pieces.forEach((square)=> {
           square.addEventListener('click', ()=> {
-            console.log(possibleMoves(square.dataset[`${color}`],board))
+            //sends the coordinates to possible moves
+            const availableSquares=possibleMoves(square.dataset[`${color}`],board)
+            console.log(availableSquares)
           })
         square.classList.add('active')
         })

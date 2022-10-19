@@ -7,7 +7,8 @@ const possibleMoves = (coords, board) => {
    */
   let possibilities = [];
   let x=parseInt(coords[0],10);
-  let y=parseInt(coords[1],10);;
+  let y=parseInt(coords[1],10);
+  console.log(typeof x, `${x}`, 'testing type of x ')
   console.log(typeof y, `${y}`, 'testing type of y ')
   
   let clickedPiece=board.squares[x][y];
@@ -129,10 +130,10 @@ const possibleMoves = (coords, board) => {
         possibilities.push([x - 2, y]);
       }
 
-      //coords: right side x+1 y+2. x+1 y-2. x+2 y+1. x+2 y-1. leftside x-1 y+2. x-2 y+1. x-1 y-2. //x-2 y-1 (i'm using // to keep track)
-      if (x + 1 <= 7 && y + 2 <= 7) {
+      //coords: right: x+1, y. x+1, y+1. x,y-1. left: x-1,y. x-1, y+1. x-1, y-1. up and down: x, y+1. x, y-1.
+      if (x + 1 <= 7) {
         const newX = x + 1;
-        const newY = y + 2;
+        const newY = y;
         if (
           board.squares[newX][newY] === undefined ||
           (board.squares[newX][newY] !== undefined &&
@@ -141,19 +142,8 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (x + 1 <= 7 && y - 2 >= 0) {
+      if (x + 1 <= 7 && y + 1 <= 7) {
         const newX = x + 1;
-        const newY = y - 2;
-        if (
-          board.squares[newX][newY] === undefined ||
-          (board.squares[newX][newY] !== undefined &&
-            board.squares[newX][newY].color !== clickedPiece.color)
-        ) {
-          possibilities.push([newX, newY]);
-        }
-      }
-      if (x + 2 <= 7 && y + 1 <= 7) {
-        const newX = x + 2;
         const newY = y + 1;
         if (
           board.squares[newX][newY] === undefined ||
@@ -163,8 +153,8 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (x + 2 <= 7 && y - 1 >= 0) {
-        const newX = x + 2;
+      if ( y - 1 >=0) {
+        const newX = x;
         const newY = y - 1;
         if (
           board.squares[newX][newY] === undefined ||
@@ -174,9 +164,10 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (y + 2 <= 7 && x - 1 >= 0) {
-        const newX = x - 1;
-        const newY = y + 2;
+   
+      if (x - 1 >= 0 ) {
+        const newX = x-1;
+        const newY = y ;
         if (
           board.squares[newX][newY] === undefined ||
           (board.squares[newX][newY] !== undefined &&
@@ -185,8 +176,9 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (y + 1 <= 7 && x - 2 >= 0) {
-        const newX = x - 2;
+     
+      if ( x - 1 >= 0 && y + 1 <= 7) {
+        const newX = x - 1;
         const newY = y + 1;
         if (
           board.squares[newX][newY] === undefined ||
@@ -196,9 +188,10 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (x - 1 >= 0 && y + 2 >= 0) {
+     
+      if (  x - 1 >= 0 && y -1 >= 0) {
         const newX = x - 1;
-        const newY = y + 2;
+        const newY = y - 1;
         if (
           board.squares[newX][newY] === undefined ||
           (board.squares[newX][newY] !== undefined &&
@@ -207,8 +200,20 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (x - 2 >= 0 && y - 1 >= 0) {
-        const newX = x - 2;
+    
+      if ( y + 1 <= 7) {
+        const newX = x ;
+        const newY = y + 1;
+        if (
+          board.squares[newX][newY] === undefined ||
+          (board.squares[newX][newY] !== undefined &&
+            board.squares[newX][newY].color !== clickedPiece.color)
+        ) {
+          possibilities.push([newX, newY]);
+        }
+      }
+      if ( y - 1 >= 0) {
+        const newX = x;
         const newY = y - 1;
         if (
           board.squares[newX][newY] === undefined ||
@@ -311,8 +316,8 @@ const possibleMoves = (coords, board) => {
       counter = 1;
       //left-up
       while (x - counter >= 0 && y + counter <= 7) {
-        let newX = x + counter;
-        let newY = y - counter;
+        let newX = x - counter;
+        let newY = y + counter;
         if (board.squares[newX][newY] === undefined) {
           counter++;
           possibilities.push([newX, newY]);
@@ -326,7 +331,7 @@ const possibleMoves = (coords, board) => {
       counter = 1;
       //left-down
       while (x - counter >= 0 && y - counter >= 0) {
-        let newX = x + counter;
+        let newX = x - counter;
         let newY = y - counter;
         if (board.squares[newX][newY] === undefined) {
           possibilities.push([newX, newY]);
@@ -345,22 +350,26 @@ const possibleMoves = (coords, board) => {
     },
     pawn: function () {
       //white and black moves different directions
+      // I didnt check if between bounds
       if (clickedPiece.color === "white") {
+        console.log('I happened')
         // en passant rule, if the pawn at your side has pasant property, you can capture It.
-        if (
+        if ( x+1<=7 &&
           board.squares[x + 1][y] !== undefined &&
           board.squares[x + 1][y].enpasant
         ) {
           possibilities.push([x + 1, y + 1]);
         }
-        if (
+        console.log('I happened 2')
+         if ( x-1>=0 &&
           board.squares[x - 1][y] !== undefined &&
           board.squares[x - 1][y].enpasant
         ) {
           possibilities.push([x - 1, y + 1]);
-        }
+        } 
+        console.log('I happened 3')
         //if at starting point, can go 2 squares up
-        if (
+        if ( y+2<=7 &&
           clickedPiece.start &&
           board.squares[x][y + 1] === undefined &&
           board.squares[x][y + 2] === undefined
@@ -368,69 +377,78 @@ const possibleMoves = (coords, board) => {
           possibilities.push([x, y + 2]);
           //setPiece should mark the y+1 square to make the en passant a possibility
         }
+        console.log('I happened 4')
 
         //white moving upwards
-        if (y + 1 <= 7) {
-          if (board.squares[x][y + 1] === undefined) {
+        if (y + 1 <= 7 && board.squares[x][y + 1] === undefined) {
             possibilities.push([x, y + 1]);
-          }
+
+            console.log('I happened 5')          }
           //attacking other pieces
-          if (
+          if ( x+1<=7 && y+1<=7 &&
             board.squares[x + 1][y + 1] !== undefined &&
             board.squares[x + 1][y + 1].color !== "white"
           ) {
             possibilities.push([x + 1, y + 1]);
           }
-          if (
+          console.log('I happened 6')
+          if ( x-1>=0 && y+1<=7 &&
             board.squares[x - 1][y + 1] !== undefined &&
-            board.squares[x + 1][y + 1].color !== "white"
+            board.squares[x - 1][y + 1].color !== "white"
           ) {
             possibilities.push([x - 1, y + 1]);
           }
-        }
-      } else {
+          console.log('Sucess')
+        }  else {
         //else means color is black
+        console.log('I happened')
         // en passant rule, if the pawn at your side has pasant property, you can capture It.
-        if (
+        if ( x+1<=7 &&
           board.squares[x + 1][y] !== undefined &&
           board.squares[x + 1][y].enpasant
         ) {
           possibilities.push([x + 1, y - 1]);
         }
-        if (
+        console.log('I happened 2')
+         if ( x-1>=0 &&
           board.squares[x - 1][y] !== undefined &&
           board.squares[x - 1][y].enpasant
         ) {
           possibilities.push([x - 1, y - 1]);
-        }
-        // starting pawn can move 2 places
-        if (
+        } 
+        console.log('I happened 3')
+        //if at starting point, can go 2 squares down
+        if ( y-2>=0 &&
           clickedPiece.start &&
           board.squares[x][y - 1] === undefined &&
           board.squares[x][y - 2] === undefined
         ) {
           possibilities.push([x, y - 2]);
+          //setPiece should mark the y-1 square to make the en passant a possibility
         }
+        console.log('I happened 4')
 
-        if (y - 1 >= 0) {
-          if (board.squares[x][y - 1] === undefined) {
+        //black moving downwards
+        if (y - 1 >= 0 && board.squares[x][y - 1] === undefined) {
             possibilities.push([x, y - 1]);
-          }
+
+            console.log('I happened 5')          }
           //attacking other pieces
-          if (
+          if ( x+1<=7 && y-1>=0 &&
             board.squares[x + 1][y - 1] !== undefined &&
             board.squares[x + 1][y - 1].color !== "black"
           ) {
             possibilities.push([x + 1, y - 1]);
           }
-          if (
+          console.log('I happened 6')
+          if ( x-1>=0 && y-1>=0 &&
             board.squares[x - 1][y - 1] !== undefined &&
             board.squares[x - 1][y - 1].color !== "black"
           ) {
             possibilities.push([x - 1, y - 1]);
           }
+          console.log('Sucess')
         }
-      }
     },
   };
   identifyMove[clickedPiece.type]();
