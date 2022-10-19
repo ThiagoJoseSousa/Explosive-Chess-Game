@@ -67,7 +67,8 @@ const matchController = () => {
           image.setAttribute("src", square.img);
           image.setAttribute("alt", `${square.color} ${square.type}`);
           //identify what color the td is
-          cell.setAttribute(`data-${square.color}`,`${x}${y}`)
+          cell.setAttribute(`data-${square.color}`,'')
+          cell.setAttribute(`data-coords`, `${x}${y}`)
           cell.appendChild(image);
         }
         //make squares green or white
@@ -121,19 +122,23 @@ const matchController = () => {
 
   }
   //add listeners to the player pieces
-  const playerCanClick= (color,board) => {
+  const playerCanClick= (color) => {
         let pieces= document.querySelectorAll(`[data-${color}]`)
         pieces.forEach((square)=> {
-          square.addEventListener('click', ()=> {
-            //sends the coordinates to possible moves
-            const availableSquares=possibleMoves(square.dataset[`${color}`],board)
-            console.log(availableSquares)
-          })
+          square.addEventListener('click', getPossibleMoves)
         square.classList.add('active')
         })
 
-  }
-  return { placePieces, renderBoard, chooseSide, playerCanClick, game };
+      }
+      
+      //after player click: return possible moves. Can't be an anonymous func because needs to be removed
+      const getPossibleMoves= (e)=> {
+        //sends the coordinates (and game) to possible moves
+  
+        const availableSquares=possibleMoves(e.target.dataset.coords,game)
+        console.log(availableSquares) 
+      }
+      return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };
 
 export default matchController;

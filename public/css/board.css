@@ -38,6 +38,12 @@
     display:none;
   }
 
-  .boardSquare.active img:hover{
+ 
+td>img {
+    pointer-events: none
+  }
+  td.boardSquare.active:hover{
     cursor:pointer;
   }
+
+  

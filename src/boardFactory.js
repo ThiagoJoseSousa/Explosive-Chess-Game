@@ -28,7 +28,6 @@ const boardFactory = () => {
   };
   // a function to set piece place
   const setPieceTo = (pieceObj, xSquare, ySquare, start) => {
-    pieceObj.coordinates = [xSquare, ySquare];
     //marks if the piece is on start square
     if (start) {
       pieceObj.start = true;
