@@ -46,12 +46,15 @@ td>img {
     cursor:pointer;
   }
 
+  .possibleMove{
+    cursor:pointer;
+  }
   .grey {
     border-style: double;
     opacity: 65%;
     background-color: gray;
-    width: 40%;
-    height:40%;
+    width: 30%;
+    height:30%;
   }
 
   

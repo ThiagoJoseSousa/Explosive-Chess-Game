@@ -135,8 +135,8 @@ const matchController = () => {
 
   //after player click: return possible moves. Can't be an anonymous func because needs to be removed
   const getPossibleMoves = (e) => {
+    clearBoard() // each click new possibilites should appear, and the olds removed
     //sends the coordinates (and game) to possible moves
-
     const availableSquares = possibleMoves(e.target.dataset.coords, game);
     displayPossibleMoves(availableSquares);
   };
@@ -147,11 +147,24 @@ const matchController = () => {
       let grey = document.createElement("div");
       grey.classList.add("grey");
 
-      document
-        .querySelector(`[data-coords="${coords[0]}${coords[1]}"]`)
-        .appendChild(grey);
+      let possibleSquare=document.querySelector(`[data-coords="${coords[0]}${coords[1]}"]`);
+      possibleSquare.classList.add('possibleMove')
+      possibleSquare.appendChild(grey);
+      possibleSquare.addEventListener('click', play)
     });
   };
+  const play=(e)=> {
+    //removing grey squares, event listeners and classlist
+    clearBoard()
+
+  }
+  const clearBoard=()=> {
+      document.querySelectorAll('.grey').forEach((item)=>{
+      let parentElement=item.parentElement;
+      parentElement.classList.remove('possibleMove')
+      parentElement.removeEventListener('click',play)
+      parentElement.removeChild(item)
+    })}
   return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };
 
