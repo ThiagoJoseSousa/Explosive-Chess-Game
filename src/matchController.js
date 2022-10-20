@@ -138,7 +138,7 @@ const matchController = () => {
 
   //after player click: return possible moves. Can't be an anonymous func because needs to be removed
   const getPossibleMoves = (e) => {
-    clearBoard() // each click new possibilites should appear, and the olds removed
+    clearAttacks() // each click new possibilites should appear, and the olds removed
     e.target.setAttribute('id','clickedPiece') // marks the clicked piece
     //sends the coordinates (and game) to possible moves
     const availableSquares = possibleMoves(e.target.dataset.coords, game);
@@ -178,27 +178,86 @@ const matchController = () => {
          gameBoard[newX][oldY]=undefined;
     } }
     
-    
     // moves rook if castling
     if (gameBoard[oldX][oldY].type==='king' && gameBoard[oldX][oldY].start) {
       if (newX-oldX===2) {
-    game.setPieceTo(gameBoard[newX+1][oldY],newX-1,oldY)
-    gameBoard[newX+1][oldY]=undefined;} else if (newX-oldX===-2) {
-      game.setPieceTo(gameBoard[newX-2][oldY], newX+1,oldY)
-      gameBoard[newX-2][oldY]=undefined;
-    }
-    }
-    game.setPieceTo(gameBoard[oldX][oldY],newX,newY)
-    console.log('I happened 2')
-    gameBoard[oldX][oldY]=undefined
-    console.log('I happened 3')
+        game.setPieceTo(gameBoard[newX+1][oldY],newX-1,oldY)
+        gameBoard[newX+1][oldY]=undefined;} else if (newX-oldX===-2) {
+          game.setPieceTo(gameBoard[newX-2][oldY], newX+1,oldY)
+          gameBoard[newX-2][oldY]=undefined;
+        }
+      }
+      game.setPieceTo(gameBoard[oldX][oldY],newX,newY)
+      console.log('I happened 2')
+      gameBoard[oldX][oldY]=undefined
+      console.log('I happened 3')
+      
+      clearAttacks()
+      renderBoard();
+      playerCanClick(gameBoard[newX][newY].color)
+      //transform pawn condition (white) (remake It, its so ugly)
+      if (newY===7 && gameBoard[newX][newY].type==='pawn') {
+      deactivatePieces('white')
+        let promotionSquare = document.querySelector(`[data-coords="${newX}${newY}"]`)
+        //gets the square promoted
 
-    clearBoard()
-    renderBoard();
-    playerCanClick(gameBoard[newX][newY].color)
+        let wrapper=document.createElement('div');
+        wrapper.classList.add('promoting')
+
+        let queen= document.createElement('img')
+        queen.setAttribute('src','../public/images/pieces/white queen.png')
+        queen.setAttribute('alt','promote to queen')
+        queen.addEventListener('click', (e)=> {
+          gameBoard[newX][newY]=game.pieceFactory("queen", "white")
+          renderBoard();
+        })
+        queen.classList.add('active')
+
+        let knight=document.createElement('img')
+        knight.setAttribute('src','../public/images/pieces/white knight.png')
+        knight.setAttribute('alt','promote to knight')
+        knight.addEventListener('click', ()=> {
+          gameBoard[newX][newY]=game.pieceFactory("knight", "white")
+          renderBoard()
+        })
+        knight.classList.add('active')
+
+        let rook=document.createElement('img')
+        rook.setAttribute('src','../public/images/pieces/white rook.png')
+        rook.setAttribute('alt','promote to rook')
+        rook.addEventListener('click', ()=> {
+          gameBoard[newX][newY]=game.pieceFactory("rook", "white")
+          renderBoard()
+        })
+        rook.classList.add('active')
+
+        let bishop=document.createElement('img')
+        bishop.setAttribute('src','../public/images/pieces/white bishop.png')
+        bishop.setAttribute('alt','promote to bishop')
+        bishop.addEventListener('click', ()=> {
+          gameBoard[newX][newY]=game.pieceFactory("bishop", "white")
+          renderBoard()
+        })
+        bishop.classList.add('active')
+
+        let pawn=document.createElement('img')
+        pawn.setAttribute('src','../public/images/pieces/white pawn.png')
+        pawn.setAttribute('alt','promote to pawn')
+        pawn.addEventListener('click', ()=> {
+          renderBoard()
+        })
+        pawn.classList.add('active')
+
+        wrapper.appendChild(queen)
+        wrapper.appendChild(knight);
+        wrapper.appendChild(rook);
+        wrapper.appendChild(bishop)
+        wrapper.appendChild(pawn)
+        promotionSquare.appendChild(wrapper)
+      }
     
   }
-  const clearBoard=()=> {
+  const clearAttacks=()=> {
     // when move is done, forget about last piece clicked
     let clickedPiece=document.querySelector('#clickedPiece');
     if (clickedPiece!==null) {
@@ -209,7 +268,22 @@ const matchController = () => {
       parentElement.classList.remove('possibleMove')
       parentElement.removeEventListener('click',play)
       parentElement.removeChild(item)
+
+      
     })}
+
+    const deactivatePieces= (color) =>{
+      let pieces=document.querySelectorAll(`[data-${color}]`)
+      //removes listener and re renders
+      pieces.forEach((item)=> {
+        console.log ('item removed sucessfully')
+        item.removeEventListener('click',getPossibleMoves)
+        item.classList.remove('active')
+      })
+    }
+    const promotePawn= () => {
+      
+    }
 
   return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };

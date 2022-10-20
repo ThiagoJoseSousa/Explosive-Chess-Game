@@ -59,3 +59,21 @@ td>img {
   }
 
   
+.promoting {
+  position:absolute;
+  background-color:rgb(252, 219, 32);
+  height:70px;
+  border-style: solid;
+  border-color: rgb(60, 0, 156);
+  margin-top: 140px;
+  opacity:90%
+}
+.promoting img {
+  margin:5px;
+  height:100%;
+  
+}
+
+td .active {
+  cursor:pointer;
+}
