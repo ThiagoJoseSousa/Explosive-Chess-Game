@@ -109,7 +109,7 @@ const possibleMoves = (coords, board) => {
     },
     king: function () {
       //castling possibility: if both king and rook is at start position and there's no pieces between them
-      console.log('I happened 1')
+      console.log("I happened 1");
       if (
         clickedPiece.start &&
         board.squares[x + 3][y] !== undefined &&
@@ -119,7 +119,7 @@ const possibleMoves = (coords, board) => {
       ) {
         possibilities.push([x + 2, y]);
       }
-      console.log('I happened 2')
+      console.log("I happened 2");
       if (
         clickedPiece.start &&
         board.squares[x - 4][y] !== undefined &&
@@ -130,7 +130,7 @@ const possibleMoves = (coords, board) => {
       ) {
         possibilities.push([x - 2, y]);
       }
-      console.log('I happened 3')
+      console.log("I happened 3");
       //coords: right: x+1, y. x+1, y+1. x,y-1. left: x-1,y. x-1, y+1. x-1, y-1. up and down: x, y+1. x, y-1.
       if (x + 1 <= 7) {
         const newX = x + 1;
@@ -154,8 +154,8 @@ const possibleMoves = (coords, board) => {
           possibilities.push([newX, newY]);
         }
       }
-      if (x+1<=7 && y - 1 >= 0) {
-        const newX = x+1;
+      if (x + 1 <= 7 && y - 1 >= 0) {
+        const newX = x + 1;
         const newY = y - 1;
         if (
           board.squares[newX][newY] === undefined ||
@@ -359,7 +359,8 @@ const possibleMoves = (coords, board) => {
         if (
           x + 1 <= 7 &&
           board.squares[x + 1][y] !== undefined &&
-          board.squares[x + 1][y].enpasant && board.squares[x + 1][y].color!==clickedPiece.color
+          board.squares[x + 1][y].enpasant &&
+          board.squares[x + 1][y].color !== clickedPiece.color
         ) {
           possibilities.push([x + 1, y + 1]);
         }
@@ -367,7 +368,8 @@ const possibleMoves = (coords, board) => {
         if (
           x - 1 >= 0 &&
           board.squares[x - 1][y] !== undefined &&
-          board.squares[x - 1][y].enpasant && board.squares[x - 1][y].color!==clickedPiece.color
+          board.squares[x - 1][y].enpasant &&
+          board.squares[x - 1][y].color !== clickedPiece.color
         ) {
           possibilities.push([x - 1, y + 1]);
         }
@@ -416,7 +418,8 @@ const possibleMoves = (coords, board) => {
         if (
           x + 1 <= 7 &&
           board.squares[x + 1][y] !== undefined &&
-          board.squares[x + 1][y].enpasant && board.squares[x + 1][y].color!==clickedPiece.color
+          board.squares[x + 1][y].enpasant &&
+          board.squares[x + 1][y].color !== clickedPiece.color
         ) {
           possibilities.push([x + 1, y - 1]);
         }
@@ -424,7 +427,8 @@ const possibleMoves = (coords, board) => {
         if (
           x - 1 >= 0 &&
           board.squares[x - 1][y] !== undefined &&
-          board.squares[x - 1][y].enpasant && board.squares[x - 1][y].color!==clickedPiece.color
+          board.squares[x - 1][y].enpasant &&
+          board.squares[x - 1][y].color !== clickedPiece.color
         ) {
           possibilities.push([x - 1, y - 1]);
         }
@@ -434,7 +438,7 @@ const possibleMoves = (coords, board) => {
           y - 2 >= 0 &&
           clickedPiece.start &&
           board.squares[x][y - 1] === undefined &&
-          board.squares[x][y - 2] === undefined 
+          board.squares[x][y - 2] === undefined
         ) {
           possibilities.push([x, y - 2]);
           //setPiece should mark the y-1 square to make the en passant a possibility
