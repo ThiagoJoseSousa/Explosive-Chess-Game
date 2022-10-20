@@ -55,6 +55,7 @@ td>img {
     background-color: gray;
     width: 30%;
     height:30%;
+    pointer-events: none
   }
 
   

@@ -50,6 +50,9 @@ const matchController = () => {
   const renderBoard = () => {
     //create a variable to fill square colors;
     let green = false;
+    //clear old rows.
+    document.querySelector('#boardSquares').innerHTML=''
+
     //creates each row
     gameBoard.forEach((row, x) => {
       let tableRow = document.createElement("tr");
@@ -136,6 +139,7 @@ const matchController = () => {
   //after player click: return possible moves. Can't be an anonymous func because needs to be removed
   const getPossibleMoves = (e) => {
     clearBoard() // each click new possibilites should appear, and the olds removed
+    e.target.setAttribute('id','clickedPiece') // marks the clicked piece
     //sends the coordinates (and game) to possible moves
     const availableSquares = possibleMoves(e.target.dataset.coords, game);
     displayPossibleMoves(availableSquares);
@@ -154,17 +158,59 @@ const matchController = () => {
     });
   };
   const play=(e)=> {
-    //removing grey squares, event listeners and classlist
-    clearBoard()
+    //move object
+    let oldPiece= document.querySelector('#clickedPiece');
+    
+    let oldX=parseInt(oldPiece.dataset.coords[0],10)
+    let oldY=parseInt(oldPiece.dataset.coords[1],10)
+    let newX=parseInt(e.target.dataset.coords[0],10)
+    let newY=parseInt(e.target.dataset.coords[1],10)
+    console.log('I happened')
+    
+    // en pasant condition starter
+    if (gameBoard[oldX][oldY].type==='pawn') {
+      gameBoard[oldX][oldY].enpasant=false
+      //checks if 2 squares were advanced
+      if (newY-oldY===2 || oldY-newY===2) {
+        gameBoard[oldX][oldY].enpasant=true; //a problem here, enpasant should be true for one turn and not one move
+        //dettecting if en pasant attack below
+      } else if (oldX!==newX &&  gameBoard[newX][newY]===undefined) { 
+         gameBoard[newX][oldY]=undefined;
+    } }
+    
+    
+    // moves rook if castling
+    if (gameBoard[oldX][oldY].type==='king' && gameBoard[oldX][oldY].start) {
+      if (newX-oldX===2) {
+    game.setPieceTo(gameBoard[newX+1][oldY],newX-1,oldY)
+    gameBoard[newX+1][oldY]=undefined;} else if (newX-oldX===-2) {
+      game.setPieceTo(gameBoard[newX-2][oldY], newX+1,oldY)
+      gameBoard[newX-2][oldY]=undefined;
+    }
+    }
+    game.setPieceTo(gameBoard[oldX][oldY],newX,newY)
+    console.log('I happened 2')
+    gameBoard[oldX][oldY]=undefined
+    console.log('I happened 3')
 
+    clearBoard()
+    renderBoard();
+    playerCanClick(gameBoard[newX][newY].color)
+    
   }
   const clearBoard=()=> {
+    // when move is done, forget about last piece clicked
+    let clickedPiece=document.querySelector('#clickedPiece');
+    if (clickedPiece!==null) {
+      clickedPiece.removeAttribute('id')
+    }
       document.querySelectorAll('.grey').forEach((item)=>{
       let parentElement=item.parentElement;
       parentElement.classList.remove('possibleMove')
       parentElement.removeEventListener('click',play)
       parentElement.removeChild(item)
     })}
+
   return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };
 
