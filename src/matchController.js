@@ -108,23 +108,13 @@ const matchController = () => {
     }
     return { player1, player2 };
   };
-  // we'll now start the turns.
-  const startTurns = (player1, player2) => {
-    let turn = 1;
-    //while king is alive
-    while (player1.king && player2.king) {
-      if (turn === 1 && player1.human) {
-        // i can check who is human just one time.
 
-        //white can move
-        turn = 2;
-      } else if (player2.human) {
-        //black can move
-        turn = 1;
-      } else {
-        //if its computer turn just skip
-        turn = 1;
-      }
+  // change turns based on color
+  const changeTurn = (newX, newY) => {
+    if (gameBoard[newX][newY].color === "white") {
+      playerCanClick("black");
+    } else {
+      playerCanClick("white");
     }
   };
   //add listeners to the player pieces
@@ -191,22 +181,38 @@ const matchController = () => {
         gameBoard[newX - 2][oldY] = undefined;
       }
     }
+
+    //checking if attacking king
+    if (
+      gameBoard[newX][newY] !== undefined &&
+      gameBoard[newX][newY].type === "king"
+    ) {
+      game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
+      gameBoard[oldX][oldY] = undefined;
+      clearAttacks();
+      renderBoard();
+      alert(`${gameBoard[newX][newY].color} won the game!`);
+      return;
+    }
     game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
     console.log("I happened 2");
     gameBoard[oldX][oldY] = undefined;
     console.log("I happened 3");
-
+    console.log(gameBoard[newX][newY]);
     clearAttacks();
     renderBoard();
-    playerCanClick(gameBoard[newX][newY].color);
-    //promote pawn condition
+
+    //if its not a pawn promoting, turns can change!
     if (gameBoard[newX][newY].type === "pawn") {
       if (newY === 7) {
         promotePawn.white(newX, newY);
-      }
-      if (newY === 0) {
+      } else if (newY === 0) {
         promotePawn.black(newX, newY);
+      } else {
+        changeTurn(newX, newY);
       }
+    } else {
+      changeTurn(newX, newY);
     }
   };
   const clearAttacks = () => {
@@ -223,18 +229,8 @@ const matchController = () => {
     });
   };
 
-  const deactivatePieces = (color) => {
-    let pieces = document.querySelectorAll(`[data-${color}]`);
-    //removes listener and re renders
-    pieces.forEach((item) => {
-      console.log("item removed sucessfully");
-      item.removeEventListener("click", getPossibleMoves);
-      item.classList.remove("active");
-    });
-  };
   const promotePawn = {
     white: function (newX, newY) {
-      deactivatePieces("white");
       let promotionSquare = document.querySelector(
         `[data-coords="${newX}${newY}"]`
       );
@@ -249,6 +245,7 @@ const matchController = () => {
       queen.addEventListener("click", (e) => {
         gameBoard[newX][newY] = game.pieceFactory("queen", "white");
         renderBoard();
+        changeTurn(newX, newY);
       });
       queen.classList.add("active");
 
@@ -258,6 +255,7 @@ const matchController = () => {
       knight.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("knight", "white");
         renderBoard();
+        changeTurn(newX, newY);
       });
       knight.classList.add("active");
 
@@ -267,6 +265,7 @@ const matchController = () => {
       rook.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("rook", "white");
         renderBoard();
+        changeTurn(newX, newY);
       });
       rook.classList.add("active");
 
@@ -276,6 +275,7 @@ const matchController = () => {
       bishop.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("bishop", "white");
         renderBoard();
+        changeTurn(newX, newY);
       });
       bishop.classList.add("active");
 
@@ -284,6 +284,7 @@ const matchController = () => {
       pawn.setAttribute("alt", "promote to pawn");
       pawn.addEventListener("click", () => {
         renderBoard();
+        changeTurn(newX, newY);
       });
       pawn.classList.add("active");
 
@@ -295,7 +296,6 @@ const matchController = () => {
       promotionSquare.appendChild(wrapper);
     },
     black: function (newX, newY) {
-      deactivatePieces("black");
       let promotionSquare = document.querySelector(
         `[data-coords="${newX}${newY}"]`
       );
@@ -310,6 +310,7 @@ const matchController = () => {
       queen.addEventListener("click", (e) => {
         gameBoard[newX][newY] = game.pieceFactory("queen", "black");
         renderBoard();
+        changeTurn(newX, newY);
       });
       queen.classList.add("active");
 
@@ -319,6 +320,7 @@ const matchController = () => {
       knight.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("knight", "black");
         renderBoard();
+        changeTurn(newX, newY);
       });
       knight.classList.add("active");
 
@@ -328,6 +330,7 @@ const matchController = () => {
       rook.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("rook", "black");
         renderBoard();
+        changeTurn(newX, newY);
       });
       rook.classList.add("active");
 
@@ -337,6 +340,7 @@ const matchController = () => {
       bishop.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("bishop", "black");
         renderBoard();
+        changeTurn(newX, newY);
       });
       bishop.classList.add("active");
 
@@ -345,6 +349,7 @@ const matchController = () => {
       pawn.setAttribute("alt", "promote to pawn");
       pawn.addEventListener("click", () => {
         renderBoard();
+        changeTurn(newX, newY);
       });
       pawn.classList.add("active");
 

@@ -62,7 +62,7 @@ td>img {
 .promoting {
   position:absolute;
   background-color:rgb(252, 219, 32);
-  height:70px;
+  height:fit-content;
   border-style: solid;
   border-color: rgb(60, 0, 156);
   margin-top: 140px;
@@ -70,7 +70,7 @@ td>img {
 }
 .promoting img {
   margin:5px;
-  height:100%;
+  height:70px;
   
 }
 

@@ -43,6 +43,8 @@ function initializeBoard(e) {
   // adds listeners to the human pieces.
   if (players.player1.human) {
     initialize.playerCanClick("white");
+    //just for testing
+    initialize.playerCanClick("black");
   } else {
     initialize.playerCanClick("black");
   }
