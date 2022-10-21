@@ -46,6 +46,9 @@ function initializeBoard(e) {
     //just for testing
     initialize.playerCanClick("black");
   } else {
+    //AI random move happens before initializing black and changes the turn 
     initialize.playerCanClick("black");
   }
 }
+
+export default initializeBoard;
