@@ -183,9 +183,9 @@ const matchController = () => {
       }
     }
     console.log('I happened 1 2 ')
-    //checking if attacking
+    //checking if attacking, but skip if to see its a pawn thats gonna promote
     if (
-      gameBoard[newX][newY] !== undefined 
+      gameBoard[newX][newY] !== undefined
     ) {
       // if attacking king
       if (gameBoard[newX][newY].type === "king") {
@@ -197,23 +197,16 @@ const matchController = () => {
       alert(`${gameBoard[newX][newY].color} won the game!`);
       //initializeBoard() make sure to put e 
       return;} else {
-        //adding exploding option
-        let color=gameBoard[oldX][oldY].color
+      //move and add the exploding
       game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
       gameBoard[oldX][oldY] = undefined;
-      let testString=''+newX+newY;
-      //returns true if king isnt included
-      let kingAlive=explodeSquares(testString); 
       clearAttacks();
       renderBoard();
-
-      if (kingAlive) {changeTurn(color)} else {
-        alert(`Game has ended!`);
-      }
-      //test string, the real paremeter is e;
+      attackChoice(newX,newY)
         return;
       }
     } 
+    //normal move
     game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
     console.log("I happened 2");
     gameBoard[oldX][oldY] = undefined;
@@ -383,28 +376,76 @@ const matchController = () => {
   };
   
   const explodeSquares= (e)=> {
-    let initialSquare=e//.target.dataset.coords;
+    console.log('Im getting to explode')
+    let initialSquare=e.target.parentElement.parentElement.dataset.coords;
     let x= parseInt(initialSquare[0],10);
     let y= parseInt(initialSquare[1],10);
+    
+    const storeColor=gameBoard[x][y].color;
+    console.log(storeColor, 'stored color')
+    //the king cant explode itself
+if (gameBoard[x][y].type==='king'){gameBoard[x][y]=undefined; alert(`${storeColor} has lost`)}
 
-    let kingAlive= true;
-// exploding the area
+//keeps track if opposite king was exploded
+    let deadKing= false;
+// exploding the area and checking if kings is involved, assigning deadKing to the color of the loser side
 console.log('im getting to here')
     gameBoard[x][y]=undefined;
-    if ( y+1<=7 && gameBoard[x][y+1]!==undefined ){if (gameBoard[x][y+1].type==='king'){if (gameBoard[x][y+1].type==='king'){kingAlive=false;};gameBoard[x][y+1]=undefined;};
+    if ( y+1<=7 && gameBoard[x][y+1]!==undefined ){if (gameBoard[x][y+1].type==='king'){if (gameBoard[x][y+1].type==='king'){deadKing=gameBoard[x][y+1].color;};gameBoard[x][y+1]=undefined;};
     gameBoard[x][y+1]=undefined ; 
    }
-    if (y-1>=0 && gameBoard[x][y-1]!==undefined){if (gameBoard[x][y-1].type==='king'){kingAlive=false;};gameBoard[x][y-1]=undefined;}
-    if (x+1<=7 && y+1<=7 && gameBoard[x+1][y+1]!==undefined){if (gameBoard[x+1][y+1].type==='king'){kingAlive=false;};gameBoard[x+1][y+1]=undefined;}
-    if (x+1<=7 && gameBoard[x+1][y]!==undefined){if (gameBoard[x+1][y].type==='king'){kingAlive=false;};gameBoard[x+1][y]=undefined}
-    if (x+1<=7 && y-1>=0 && gameBoard[x+1][y-1]!==undefined){if (gameBoard[x+1][y-1].type==='king'){kingAlive=false;};gameBoard[x+1][y-1]=undefined;}
-    if (x-1>=0 && y+1<=7 && gameBoard[x-1][y+1]!==undefined){if (gameBoard[x-1][y+1].type==='king'){kingAlive=false;};gameBoard[x-1][y+1]=undefined;}
-    if (x-1>=0 && gameBoard[x-1][y]!==undefined){if (gameBoard[x-1][y].type==='king'){kingAlive=false;};gameBoard[x-1][y]=undefined;}
-    if (x-1>=0 && y-1>=0 && gameBoard[x-1][y-1]!==undefined){if (gameBoard[x-1][y-1].type==='king'){kingAlive=false;};gameBoard[x-1][y-1]=undefined;}
+    if (y-1>=0 && gameBoard[x][y-1]!==undefined){if (gameBoard[x][y-1].type==='king'){deadKing=gameBoard[x][y-1].color;};gameBoard[x][y-1]=undefined;}
+    if (x+1<=7 && y+1<=7 && gameBoard[x+1][y+1]!==undefined){if (gameBoard[x+1][y+1].type==='king'){deadKing=gameBoard[x+1][y+1].color;};gameBoard[x+1][y+1]=undefined;}
+    if (x+1<=7 && gameBoard[x+1][y]!==undefined){if (gameBoard[x+1][y].type==='king'){deadKing=gameBoard[x+1][y].color;};gameBoard[x+1][y]=undefined}
+    if (x+1<=7 && y-1>=0 && gameBoard[x+1][y-1]!==undefined){if (gameBoard[x+1][y-1].type==='king'){deadKing=gameBoard[x+1][y-1].color;};gameBoard[x+1][y-1]=undefined;}
+    if (x-1>=0 && y+1<=7 && gameBoard[x-1][y+1]!==undefined){if (gameBoard[x-1][y+1].type==='king'){deadKing=gameBoard[x-1][y+1].color;};gameBoard[x-1][y+1]=undefined;}
+    if (x-1>=0 && gameBoard[x-1][y]!==undefined){if (gameBoard[x-1][y].type==='king'){deadKing=gameBoard[x-1][y].color;};gameBoard[x-1][y]=undefined;}
+    if (x-1>=0 && y-1>=0 && gameBoard[x-1][y-1]!==undefined){if (gameBoard[x-1][y-1].type==='king'){deadKing=gameBoard[x-1][y-1].color;};gameBoard[x-1][y-1]=undefined;}
     
-    return kingAlive;
+    //checks if king has died
+    if (deadKing){
+      alert(`${deadKing} has lost`)
+      renderBoard();
+      return;
+    }
+    clearAttacks();
+      renderBoard();
+      changeTurn(storeColor)
   }
 
+  const attackChoice= (newX,newY) => {
+    let selectedSquare=document.querySelector(`[data-coords='${newX}${newY}']`)
+    
+    let chooseAttack=document.createElement('div');
+    chooseAttack.classList.add('attackChoice')
+
+    let attack=document.createElement('p')
+    attack.textContent='Normal attack';
+    attack.addEventListener('click', ()=>{
+      clearAttacks();
+      renderBoard();
+      //if its not a pawn promoting, turns can change!
+    if (gameBoard[newX][newY].type === "pawn") {
+      if (newY === 7) {
+        promotePawn.white(newX, newY);
+      } else if (newY === 0) {
+        promotePawn.black(newX, newY);
+      } else {
+        changeTurn(gameBoard[newX][newY].color);
+      }
+    } else{
+      changeTurn(gameBoard[newX][newY].color);
+    }
+    })
+
+    let explode=document.createElement('p')
+    explode.textContent='Explode';
+    explode.addEventListener('click', explodeSquares)
+
+    chooseAttack.appendChild(attack)
+    chooseAttack.appendChild(explode)
+    selectedSquare.appendChild(chooseAttack)
+  }
   return { placePieces, renderBoard, chooseSide, playerCanClick, game };
 };
 

@@ -77,3 +77,19 @@ td>img {
 td .active {
   cursor:pointer;
 }
+
+.attackChoice {
+  flex-direction: column;
+  margin-left: 140px;
+  background-color: blue;
+  margin-bottom: 30px;
+  color: white;
+  border: orange;
+  border-style: solid;
+  font-weight: bold;
+  position: absolute;
+}
+
+.attackChoice p:hover {
+  color:red;
+}
