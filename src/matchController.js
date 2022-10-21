@@ -52,7 +52,11 @@ const matchController = () => {
     //create a variable to fill square colors;
     let green = false;
     //clear old rows.
-    document.querySelector("#boardSquares").innerHTML = "";
+    let table=document.querySelector("#boardSquares");
+    //cleaning the board with a loop to avoid memory leaks of child event handlers
+    while (table.firstChild){
+      table.removeChild(table.firstChild)
+    }
 
     //creates each row
     gameBoard.forEach((row, x) => {
@@ -95,7 +99,7 @@ const matchController = () => {
       //event listener should be added depending on whose turn it's
 
       //append row to table
-      document.getElementById("boardSquares").appendChild(tableRow);
+      table.appendChild(tableRow);
     });
   };
   //here the player will chose their color at the start of the game
