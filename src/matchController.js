@@ -13,6 +13,9 @@ const matchController = () => {
   let game = boardFactory();
   let gameBoard = game.squares;
 
+  //my code would be a lot cleaner if I thought of creating lastPlayedPiece before
+  let lastPlayedPiece={}
+
   const placePieces = () => {
     //each object must be different, or if one dies all dies.
     //putting white pawns on board
@@ -164,17 +167,23 @@ const matchController = () => {
     let newY = parseInt(e.target.dataset.coords[1], 10);
     console.log("I happened");
     console.log (oldX, oldY)
-    // en pasant condition starter
-    if (gameBoard[oldX][oldY].type === "pawn") {
-      gameBoard[oldX][oldY].enpasant = false;
-      //checks if 2 squares were advanced
-      if (newY - oldY === 2 || oldY - newY === 2) {
-        gameBoard[oldX][oldY].enpasant = true; //a problem here, enpasant should be true for one turn and not one move
-        //dettecting if en pasant attack below
-      } else if (oldX !== newX && gameBoard[newX][newY] === undefined) {
+      //en pasant: checks if 2 squares were advanced, sets the previous piece en pasant to false, the current piece en pasant to true.
+      if (gameBoard[oldX][oldY].type === "pawn" && (newY - oldY === 2 || oldY - newY === 2)) {
+        lastPlayedPiece.enpasant=false;
+        gameBoard[oldX][oldY].enpasant = true; 
+        lastPlayedPiece=gameBoard[oldX][oldY]
+        //dettecting if attacking an en pasant
+      } else if (gameBoard[oldX][oldY].type==='pawn' && gameBoard[newX][oldY]===lastPlayedPiece && gameBoard[newX][newY]===undefined ) {
         gameBoard[newX][oldY] = undefined;
-      }
-    }
+        game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
+        gameBoard[oldX][oldY] = undefined;
+        clearAttacks();
+        renderBoard();
+        attackChoice(newX,newY)
+
+      return;
+      } else {lastPlayedPiece.enpasant=false; lastPlayedPiece=gameBoard[oldX][oldY]}
+
     console.log('I happened 1 1 ')
     // moves rook if castling
     if (gameBoard[oldX][oldY].type === "king" && gameBoard[oldX][oldY].start) {
