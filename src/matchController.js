@@ -1,19 +1,10 @@
 import boardFactory from "./boardFactory.js";
 import possibleMoves from "./moves.js";
-import initializeBoard from "./index.js";
-// This module will start the match, say whose turn is, and tell wether a move is an attack or not. And end.
-
-//take the user input to decide which side to begin
-
-//first I want the possibleMoves to have event listeners, but It cant happen before each square is a div. So my priority is starting the game
-
-//priority is rendering the board
-
 const matchController = () => {
   let game = boardFactory();
   let gameBoard = game.squares;
   //my code would be a lot cleaner if I thought of creating lastPlayedPiece before
-  let lastPlayedPiece={}
+  let lastPlayedPiece = {};
   let players;
 
   const placePieces = () => {
@@ -55,10 +46,10 @@ const matchController = () => {
     //create a variable to fill square colors;
     let green = false;
     //clear old rows.
-    let table=document.querySelector("#boardSquares");
+    let table = document.querySelector("#boardSquares");
     //cleaning the board with a loop to avoid memory leaks of child event handlers
-    while (table.firstChild){
-      table.removeChild(table.firstChild)
+    while (table.firstChild) {
+      table.removeChild(table.firstChild);
     }
 
     //creates each row
@@ -115,7 +106,7 @@ const matchController = () => {
       player2.human = true;
     }
     // assigns players variable before returning the players
-    players= { player1, player2 }
+    players = { player1, player2 };
     return players;
   };
 
@@ -123,11 +114,16 @@ const matchController = () => {
   const changeTurn = (color) => {
     if (color === "white") {
       if (players.player2.human) {
-      playerCanClick('black')
-  } else {play(undefined,computerAttack("black"))}
-    } else { if (players.player1.human) {
-      playerCanClick('white')
-  } else {play(undefined,computerAttack("white"))}
+        playerCanClick("black");
+      } else {
+        play(undefined, computerAttack("black"));
+      }
+    } else {
+      if (players.player1.human) {
+        playerCanClick("white");
+      } else {
+        play(undefined, computerAttack("white"));
+      }
     }
   };
   //add listeners to the player pieces
@@ -163,43 +159,54 @@ const matchController = () => {
     });
   };
   const play = (e, computerTurn) => {
-    //get e coordinates if not computer turn 
-    let oldPiece; 
+    //get e coordinates if not computer turn
+    let oldPiece;
     let oldX;
     let oldY;
     let newX;
     let newY;
     if (!computerTurn) {
-      oldPiece= document.querySelector("#clickedPiece");
+      oldPiece = document.querySelector("#clickedPiece");
       oldX = parseInt(oldPiece.dataset.coords[0], 10);
       oldY = parseInt(oldPiece.dataset.coords[1], 10);
       newX = parseInt(e.target.dataset.coords[0], 10);
       newY = parseInt(e.target.dataset.coords[1], 10);
-} else {oldPiece=computerTurn.start;
-oldX=parseInt(oldPiece.dataset.coords[0], 10);
-oldY = parseInt(oldPiece.dataset.coords[1], 10);
-newX=computerTurn.computerEnd[0];
-newY=computerTurn.computerEnd[1]}
-    console.log("I happened");
-    console.log (oldX, oldY)
-      //en pasant: checks if 2 squares were advanced, sets the previous piece en pasant to false, the current piece en pasant to true.
-      if (gameBoard[oldX][oldY].type === "pawn" && (newY - oldY === 2 || oldY - newY === 2)) {
-        lastPlayedPiece.enpasant=false;
-        gameBoard[oldX][oldY].enpasant = true; 
-        lastPlayedPiece=gameBoard[oldX][oldY]
-        //dettecting if attacking an en pasant
-      } else if (gameBoard[oldX][oldY].type==='pawn' && gameBoard[newX][oldY]===lastPlayedPiece && gameBoard[newX][newY]===undefined ) {
-        gameBoard[newX][oldY] = undefined;
-        game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
-        gameBoard[oldX][oldY] = undefined;
-        clearAttacks();
-        renderBoard();
-        attackChoice(newX,newY)
+    } else {
+      oldPiece = computerTurn.start;
+      oldX = parseInt(oldPiece.dataset.coords[0], 10);
+      oldY = parseInt(oldPiece.dataset.coords[1], 10);
+      newX = computerTurn.computerEnd[0];
+      newY = computerTurn.computerEnd[1];
+    }
+
+
+    //en pasant: checks if 2 squares were advanced, sets the previous piece en pasant to false, the current piece en pasant to true.
+    if (
+      gameBoard[oldX][oldY].type === "pawn" &&
+      (newY - oldY === 2 || oldY - newY === 2)
+    ) {
+      lastPlayedPiece.enpasant = false;
+      gameBoard[oldX][oldY].enpasant = true;
+      lastPlayedPiece = gameBoard[oldX][oldY];
+      //dettecting if attacking an en pasant
+    } else if (
+      gameBoard[oldX][oldY].type === "pawn" &&
+      gameBoard[newX][oldY] === lastPlayedPiece &&
+      gameBoard[newX][newY] === undefined
+    ) {
+      gameBoard[newX][oldY] = undefined;
+      game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
+      gameBoard[oldX][oldY] = undefined;
+      clearAttacks();
+      renderBoard();
+      attackChoice(newX, newY, computerTurn);
 
       return;
-      } else {lastPlayedPiece.enpasant=false; lastPlayedPiece=gameBoard[oldX][oldY]}
+    } else {
+      lastPlayedPiece.enpasant = false;
+      lastPlayedPiece = gameBoard[oldX][oldY];
+    }
 
-    console.log('I happened 1 1 ')
     // moves rook if castling
     if (gameBoard[oldX][oldY].type === "king" && gameBoard[oldX][oldY].start) {
       if (newX - oldX === 2) {
@@ -210,49 +217,44 @@ newY=computerTurn.computerEnd[1]}
         gameBoard[newX - 2][oldY] = undefined;
       }
     }
-    console.log('I happened 1 2 ')
     //checking if attacking, but skip if to see its a pawn thats gonna promote
-    if (
-      gameBoard[newX][newY] !== undefined
-    ) {
+    if (gameBoard[newX][newY] !== undefined) {
       // if attacking king
       if (gameBoard[newX][newY].type === "king") {
         //attack but dont change turns
-      game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
-      gameBoard[oldX][oldY] = undefined;
-      clearAttacks();
-      renderBoard();
-      alert(`${gameBoard[newX][newY].color} won the game!`);
-      //initializeBoard() make sure to put e 
-      return;} else {
-      //move and add the exploding
-      game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
-      gameBoard[oldX][oldY] = undefined;
-      clearAttacks();
-      renderBoard();
-      attackChoice(newX,newY,computerTurn)
+        game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
+        gameBoard[oldX][oldY] = undefined;
+        clearAttacks();
+        renderBoard();
+        alert(`${gameBoard[newX][newY].color} won the game!`);
+        //initializeBoard() make sure to put e
+        return;
+      } else {
+        //move and add the exploding
+        game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
+        gameBoard[oldX][oldY] = undefined;
+        clearAttacks();
+        renderBoard();
+        attackChoice(newX, newY, computerTurn);
         return;
       }
-    } 
+    }
     //normal move
     game.setPieceTo(gameBoard[oldX][oldY], newX, newY);
-    console.log("I happened 2");
     gameBoard[oldX][oldY] = undefined;
-    console.log("I happened 3");
-    console.log(gameBoard[newX][newY]);
     clearAttacks();
     renderBoard();
 
     //if its not a pawn promoting, turns can change!
     if (gameBoard[newX][newY].type === "pawn") {
       if (newY === 7) {
-        promotePawn.white(newX, newY,computerTurn);
+        promotePawn.white(newX, newY, computerTurn);
       } else if (newY === 0) {
-        promotePawn.black(newX, newY,computerTurn);
+        promotePawn.black(newX, newY, computerTurn);
       } else {
         changeTurn(gameBoard[newX][newY].color);
       }
-    } else{
+    } else {
       changeTurn(gameBoard[newX][newY].color);
     }
   };
@@ -271,14 +273,14 @@ newY=computerTurn.computerEnd[1]}
   };
 
   const promotePawn = {
-    white: function (newX, newY,computerTurn) {
-//computer always promote to queen
-if (computerTurn) {
-  gameBoard[newX][newY] = game.pieceFactory("queen", "white");
-  renderBoard();
-  changeTurn('white');
-  return
-}
+    white: function (newX, newY, computerTurn) {
+      //computer always promote to queen
+      if (computerTurn) {
+        gameBoard[newX][newY] = game.pieceFactory("queen", "white");
+        renderBoard();
+        changeTurn("white");
+        return;
+      }
       let promotionSquare = document.querySelector(
         `[data-coords="${newX}${newY}"]`
       );
@@ -293,7 +295,7 @@ if (computerTurn) {
       queen.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("queen", "white");
         renderBoard();
-        changeTurn('white');
+        changeTurn("white");
       });
       queen.classList.add("active");
 
@@ -303,7 +305,7 @@ if (computerTurn) {
       knight.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("knight", "white");
         renderBoard();
-        changeTurn('white');
+        changeTurn("white");
       });
       knight.classList.add("active");
 
@@ -313,7 +315,7 @@ if (computerTurn) {
       rook.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("rook", "white");
         renderBoard();
-        changeTurn('white');
+        changeTurn("white");
       });
       rook.classList.add("active");
 
@@ -323,7 +325,7 @@ if (computerTurn) {
       bishop.addEventListener("click", () => {
         gameBoard[newX][newY] = game.pieceFactory("bishop", "white");
         renderBoard();
-        changeTurn('white');
+        changeTurn("white");
       });
       bishop.classList.add("active");
 
@@ -332,7 +334,7 @@ if (computerTurn) {
       pawn.setAttribute("alt", "promote to pawn");
       pawn.addEventListener("click", () => {
         renderBoard();
-        changeTurn('white');
+        changeTurn("white");
       });
       pawn.classList.add("active");
 
@@ -343,15 +345,14 @@ if (computerTurn) {
       wrapper.appendChild(pawn);
       promotionSquare.appendChild(wrapper);
     },
-    black: function (newX, newY,computerTurn) {
-          //computer always promote to queen
-          if (computerTurn) {
-
-            gameBoard[newX][newY] = game.pieceFactory("queen", "black");
-            renderBoard();
-            changeTurn('black');
-            return
-          }
+    black: function (newX, newY, computerTurn) {
+      //computer always promote to queen
+      if (computerTurn) {
+        gameBoard[newX][newY] = game.pieceFactory("queen", "black");
+        renderBoard();
+        changeTurn("black");
+        return;
+      }
       let promotionSquare = document.querySelector(
         `[data-coords="${newX}${newY}"]`
       );
@@ -417,97 +418,175 @@ if (computerTurn) {
       promotionSquare.appendChild(wrapper);
     },
   };
-  
-  const explodeSquares= (e)=> {
-    console.log('Im getting to explode')
-    let initialSquare=e.target.parentElement.parentElement.dataset.coords;
-    let x= parseInt(initialSquare[0],10);
-    let y= parseInt(initialSquare[1],10);
-    
-    let storeColor=gameBoard[x][y].color;
-    let deadKing= false;
-    //the king cant explode itself, but if it takes the other king on the explosion it wins.
-if (gameBoard[x][y].type==='king'){deadKing=gameBoard[x][y] }
 
-//keeps track if opposite king was exploded
-// exploding the area and checking if kings is involved, assigning deadKing to the color of the loser side
-console.log('im getting to here')
-    gameBoard[x][y]=undefined;
-    if ( y+1<=7 && gameBoard[x][y+1]!==undefined ){if (gameBoard[x][y+1].type==='king'){if (gameBoard[x][y+1].type==='king'){deadKing=gameBoard[x][y+1].color;};gameBoard[x][y+1]=undefined;};
-    gameBoard[x][y+1]=undefined ; 
-   }
-    if (y-1>=0 && gameBoard[x][y-1]!==undefined){if (gameBoard[x][y-1].type==='king'){deadKing=gameBoard[x][y-1].color;};gameBoard[x][y-1]=undefined;}
-    if (x+1<=7 && y+1<=7 && gameBoard[x+1][y+1]!==undefined){if (gameBoard[x+1][y+1].type==='king'){deadKing=gameBoard[x+1][y+1].color;};gameBoard[x+1][y+1]=undefined;}
-    if (x+1<=7 && gameBoard[x+1][y]!==undefined){if (gameBoard[x+1][y].type==='king'){deadKing=gameBoard[x+1][y].color;};gameBoard[x+1][y]=undefined}
-    if (x+1<=7 && y-1>=0 && gameBoard[x+1][y-1]!==undefined){if (gameBoard[x+1][y-1].type==='king'){deadKing=gameBoard[x+1][y-1].color;};gameBoard[x+1][y-1]=undefined;}
-    if (x-1>=0 && y+1<=7 && gameBoard[x-1][y+1]!==undefined){if (gameBoard[x-1][y+1].type==='king'){deadKing=gameBoard[x-1][y+1].color;};gameBoard[x-1][y+1]=undefined;}
-    if (x-1>=0 && gameBoard[x-1][y]!==undefined){if (gameBoard[x-1][y].type==='king'){deadKing=gameBoard[x-1][y].color;};gameBoard[x-1][y]=undefined;}
-    if (x-1>=0 && y-1>=0 && gameBoard[x-1][y-1]!==undefined){if (gameBoard[x-1][y-1].type==='king'){deadKing=gameBoard[x-1][y-1].color;};gameBoard[x-1][y-1]=undefined;}
-    
+  const explodeSquares = (e, computerTurn) => {
+    let initialSquare;
+    if (!computerTurn) {
+      initialSquare = e.target.parentElement.parentElement.dataset.coords;
+    } else {
+      initialSquare = computerTurn.computerEnd;
+    }
+    let x = parseInt(initialSquare[0], 10);
+    let y = parseInt(initialSquare[1], 10);
+
+    let storeColor = gameBoard[x][y].color;
+    let deadKing = false;
+    //the king cant explode itself, but if it takes the other king on the explosion it wins.
+    if (gameBoard[x][y].type === "king") {
+      deadKing = gameBoard[x][y];
+    }
+
+    //keeps track if opposite king was exploded
+    // exploding the area and checking if kings is involved, assigning deadKing to the color of the loser side
+    gameBoard[x][y] = undefined;
+    if (y + 1 <= 7 && gameBoard[x][y + 1] !== undefined) {
+      if (gameBoard[x][y + 1].type === "king") {
+        if (gameBoard[x][y + 1].type === "king") {
+          deadKing = gameBoard[x][y + 1].color;
+        }
+        gameBoard[x][y + 1] = undefined;
+      }
+      gameBoard[x][y + 1] = undefined;
+    }
+    if (y - 1 >= 0 && gameBoard[x][y - 1] !== undefined) {
+      if (gameBoard[x][y - 1].type === "king") {
+        deadKing = gameBoard[x][y - 1].color;
+      }
+      gameBoard[x][y - 1] = undefined;
+    }
+    if (x + 1 <= 7 && y + 1 <= 7 && gameBoard[x + 1][y + 1] !== undefined) {
+      if (gameBoard[x + 1][y + 1].type === "king") {
+        deadKing = gameBoard[x + 1][y + 1].color;
+      }
+      gameBoard[x + 1][y + 1] = undefined;
+    }
+    if (x + 1 <= 7 && gameBoard[x + 1][y] !== undefined) {
+      if (gameBoard[x + 1][y].type === "king") {
+        deadKing = gameBoard[x + 1][y].color;
+      }
+      gameBoard[x + 1][y] = undefined;
+    }
+    if (x + 1 <= 7 && y - 1 >= 0 && gameBoard[x + 1][y - 1] !== undefined) {
+      if (gameBoard[x + 1][y - 1].type === "king") {
+        deadKing = gameBoard[x + 1][y - 1].color;
+      }
+      gameBoard[x + 1][y - 1] = undefined;
+    }
+    if (x - 1 >= 0 && y + 1 <= 7 && gameBoard[x - 1][y + 1] !== undefined) {
+      if (gameBoard[x - 1][y + 1].type === "king") {
+        deadKing = gameBoard[x - 1][y + 1].color;
+      }
+      gameBoard[x - 1][y + 1] = undefined;
+    }
+    if (x - 1 >= 0 && gameBoard[x - 1][y] !== undefined) {
+      if (gameBoard[x - 1][y].type === "king") {
+        deadKing = gameBoard[x - 1][y].color;
+      }
+      gameBoard[x - 1][y] = undefined;
+    }
+    if (x - 1 >= 0 && y - 1 >= 0 && gameBoard[x - 1][y - 1] !== undefined) {
+      if (gameBoard[x - 1][y - 1].type === "king") {
+        deadKing = gameBoard[x - 1][y - 1].color;
+      }
+      gameBoard[x - 1][y - 1] = undefined;
+    }
+
     //checks if king has died
-    if (deadKing){
-      alert(`${deadKing} has lost`)
+    if (deadKing) {
+      alert(`${deadKing} has lost`);
       renderBoard();
       return;
     }
     clearAttacks();
-      renderBoard();
-      changeTurn(storeColor)
-  }
+    renderBoard();
+    changeTurn(storeColor);
+  };
 
-  const attackChoice= (newX,newY,computerTurn) => {
-    let selectedSquare=document.querySelector(`[data-coords='${newX}${newY}']`)
-    
-    let chooseAttack=document.createElement('div');
-    chooseAttack.classList.add('attackChoice')
-
-    let attack=document.createElement('p')
-    attack.textContent='Normal attack';
-    attack.addEventListener('click', ()=>{
+  const attackChoice = (newX, newY, computerTurn) => {
+    //if computer turn: dont display UI and randomize if exploding or not.
+    if (computerTurn) {
+      let random = Math.round(Math.random());
+      if (random) {
+        explodeSquares(undefined, computerTurn);
+        return;
+      }
       clearAttacks();
       renderBoard();
       //if its not a pawn promoting, turns can change!
-    if (gameBoard[newX][newY].type === "pawn") {
-      if (newY === 7) {
-        promotePawn.white(newX, newY,computerTurn);
-      } else if (newY === 0) {
-        promotePawn.black(newX, newY,computerTurn);
+      if (gameBoard[newX][newY].type === "pawn") {
+        if (newY === 7) {
+          promotePawn.white(newX, newY, computerTurn);
+        } else if (newY === 0) {
+          promotePawn.black(newX, newY, computerTurn);
+        } else {
+          changeTurn(gameBoard[newX][newY].color);
+        }
       } else {
         changeTurn(gameBoard[newX][newY].color);
       }
-    } else{
-      changeTurn(gameBoard[newX][newY].color);
+      return;
     }
-    })
 
-    let explode=document.createElement('p')
-    explode.textContent='Explode';
-    explode.addEventListener('click', explodeSquares)
+    let selectedSquare = document.querySelector(
+      `[data-coords='${newX}${newY}']`
+    );
 
-    chooseAttack.appendChild(attack)
-    chooseAttack.appendChild(explode)
-    selectedSquare.appendChild(chooseAttack)
-  }
+    let chooseAttack = document.createElement("div");
+    chooseAttack.classList.add("attackChoice");
+
+    let attack = document.createElement("p");
+    attack.textContent = "Normal attack";
+    attack.addEventListener("click", () => {
+      clearAttacks();
+      renderBoard();
+      //if its not a pawn promoting, turns can change!
+      if (gameBoard[newX][newY].type === "pawn") {
+        if (newY === 7) {
+          promotePawn.white(newX, newY, computerTurn);
+        } else if (newY === 0) {
+          promotePawn.black(newX, newY, computerTurn);
+        } else {
+          changeTurn(gameBoard[newX][newY].color);
+        }
+      } else {
+        changeTurn(gameBoard[newX][newY].color);
+      }
+    });
+
+    let explode = document.createElement("p");
+    explode.textContent = "Explode";
+    explode.addEventListener("click", explodeSquares);
+
+    chooseAttack.appendChild(attack);
+    chooseAttack.appendChild(explode);
+    selectedSquare.appendChild(chooseAttack);
+  };
 
   // finds the piece that'll move and the move
-  const computerAttack=(color)=>{
-    let computerPieces=document.querySelectorAll(`[data-${color}]`);
-    let i=0;
-    let foundAMove=[];
+  const computerAttack = (color) => {
+    let computerPieces = document.querySelectorAll(`[data-${color}]`);
+    let i = 0;
+    let foundAMove = [];
     // while theres no possible move, keep looking computerpieces
-    while (foundAMove.length===0 && i<computerPieces.length) {
-      console.log (computerPieces[i].dataset.coords, 'im the coords of computer')
-      foundAMove=possibleMoves(computerPieces[i].dataset.coords, game);
-    i++}
-      let start=computerPieces[i-1]
-      let computerEnd=foundAMove[0]
-      console.log(computerEnd, 'Im found a move')
-      console.log(start,'Im the start piece', )
-      return {start, computerEnd}
-  }
+    while (foundAMove.length === 0 && i < computerPieces.length) {
 
+      foundAMove = possibleMoves(computerPieces[i].dataset.coords, game);
+      i++;
+    }
+    let start = computerPieces[i - 1];
+    let computerEnd = foundAMove[foundAMove.length - 1];
+    return { start, computerEnd };
+  };
 
-  return { placePieces, renderBoard, chooseSide, playerCanClick, game, play, computerAttack };
+  return {
+    placePieces,
+    renderBoard,
+    chooseSide,
+    playerCanClick,
+    game,
+    play,
+    computerAttack,
+  };
 };
 
 export default matchController;

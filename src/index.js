@@ -37,18 +37,18 @@ function initializeBoard(e) {
   let initialize = matchController();
   initialize.placePieces();
   initialize.renderBoard();
-  console.log("testing gameboard 0 0 ");
   document.getElementById("sidechoice").classList.add("hide");
+  document.getElementById("boardSquares").classList.add("tableBorder");
+
   let players = initialize.chooseSide(e.target.attributes.value.value); // acess clicked button and pass the selected choice
   // adds listeners to the human pieces.
   if (players.player1.human) {
     initialize.playerCanClick("white");
     //just for testing
   } else {
-    //AI random move happens before initializing black and changes the turn 
-    initialize.play(undefined, initialize.computerAttack('white'));
+    //AI random move happens before initializing black and changes the turn
+    initialize.play(undefined, initialize.computerAttack("white"));
   }
-
 }
 
 export default initializeBoard;
