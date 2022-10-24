@@ -114,6 +114,7 @@ const matchController = () => {
     } else {
       player2.human = true;
     }
+    // assigns players variable before returning the players
     players= { player1, player2 }
     return players;
   };
@@ -123,10 +124,10 @@ const matchController = () => {
     if (color === "white") {
       if (players.player2.human) {
       playerCanClick('black')
-  } else {play('bla',computerAttack("black"))}
+  } else {play(undefined,computerAttack("black"))}
     } else { if (players.player1.human) {
       playerCanClick('white')
-  } else {play('bla',computerAttack("white"))}
+  } else {play(undefined,computerAttack("white"))}
     }
   };
   //add listeners to the player pieces
@@ -245,9 +246,9 @@ newY=computerTurn.computerEnd[1]}
     //if its not a pawn promoting, turns can change!
     if (gameBoard[newX][newY].type === "pawn") {
       if (newY === 7) {
-        promotePawn.white(newX, newY);
+        promotePawn.white(newX, newY,computerTurn);
       } else if (newY === 0) {
-        promotePawn.black(newX, newY);
+        promotePawn.black(newX, newY,computerTurn);
       } else {
         changeTurn(gameBoard[newX][newY].color);
       }
@@ -270,7 +271,14 @@ newY=computerTurn.computerEnd[1]}
   };
 
   const promotePawn = {
-    white: function (newX, newY) {
+    white: function (newX, newY,computerTurn) {
+//computer always promote to queen
+if (computerTurn) {
+  gameBoard[newX][newY] = game.pieceFactory("queen", "white");
+  renderBoard();
+  changeTurn('white');
+  return
+}
       let promotionSquare = document.querySelector(
         `[data-coords="${newX}${newY}"]`
       );
@@ -335,7 +343,15 @@ newY=computerTurn.computerEnd[1]}
       wrapper.appendChild(pawn);
       promotionSquare.appendChild(wrapper);
     },
-    black: function (newX, newY) {
+    black: function (newX, newY,computerTurn) {
+          //computer always promote to queen
+          if (computerTurn) {
+
+            gameBoard[newX][newY] = game.pieceFactory("queen", "black");
+            renderBoard();
+            changeTurn('black');
+            return
+          }
       let promotionSquare = document.querySelector(
         `[data-coords="${newX}${newY}"]`
       );
@@ -408,13 +424,12 @@ newY=computerTurn.computerEnd[1]}
     let x= parseInt(initialSquare[0],10);
     let y= parseInt(initialSquare[1],10);
     
-    const storeColor=gameBoard[x][y].color;
-    console.log(storeColor, 'stored color')
-    //the king cant explode itself
-if (gameBoard[x][y].type==='king'){gameBoard[x][y]=undefined; alert(`${storeColor} has lost`)}
+    let storeColor=gameBoard[x][y].color;
+    let deadKing= false;
+    //the king cant explode itself, but if it takes the other king on the explosion it wins.
+if (gameBoard[x][y].type==='king'){deadKing=gameBoard[x][y] }
 
 //keeps track if opposite king was exploded
-    let deadKing= false;
 // exploding the area and checking if kings is involved, assigning deadKing to the color of the loser side
 console.log('im getting to here')
     gameBoard[x][y]=undefined;
@@ -490,6 +505,8 @@ console.log('im getting to here')
       console.log(start,'Im the start piece', )
       return {start, computerEnd}
   }
+
+
   return { placePieces, renderBoard, chooseSide, playerCanClick, game, play, computerAttack };
 };
 

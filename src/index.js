@@ -46,7 +46,7 @@ function initializeBoard(e) {
     //just for testing
   } else {
     //AI random move happens before initializing black and changes the turn 
-    initialize.play('bla', initialize.computerAttack('white'));
+    initialize.play(undefined, initialize.computerAttack('white'));
   }
 
 }
