@@ -44,11 +44,11 @@ function initializeBoard(e) {
   if (players.player1.human) {
     initialize.playerCanClick("white");
     //just for testing
-    initialize.playerCanClick("black");
   } else {
     //AI random move happens before initializing black and changes the turn 
-    initialize.playerCanClick("black");
+    initialize.play('bla', initialize.computerAttack('white'));
   }
+
 }
 
 export default initializeBoard;

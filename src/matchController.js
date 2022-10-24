@@ -12,9 +12,9 @@ import initializeBoard from "./index.js";
 const matchController = () => {
   let game = boardFactory();
   let gameBoard = game.squares;
-
   //my code would be a lot cleaner if I thought of creating lastPlayedPiece before
   let lastPlayedPiece={}
+  let players;
 
   const placePieces = () => {
     //each object must be different, or if one dies all dies.
@@ -114,15 +114,19 @@ const matchController = () => {
     } else {
       player2.human = true;
     }
-    return { player1, player2 };
+    players= { player1, player2 }
+    return players;
   };
 
-  // change turns based on color
+  // receives a color and lets the other color play
   const changeTurn = (color) => {
     if (color === "white") {
-      playerCanClick("black");
-    } else {
-      playerCanClick("white");
+      if (players.player2.human) {
+      playerCanClick('black')
+  } else {play('bla',computerAttack("black"))}
+    } else { if (players.player1.human) {
+      playerCanClick('white')
+  } else {play('bla',computerAttack("white"))}
     }
   };
   //add listeners to the player pieces
@@ -157,14 +161,24 @@ const matchController = () => {
       possibleSquare.addEventListener("click", play);
     });
   };
-  const play = (e) => {
-    //move object
-    let oldPiece = document.querySelector("#clickedPiece");
-
-    let oldX = parseInt(oldPiece.dataset.coords[0], 10);
-    let oldY = parseInt(oldPiece.dataset.coords[1], 10);
-    let newX = parseInt(e.target.dataset.coords[0], 10);
-    let newY = parseInt(e.target.dataset.coords[1], 10);
+  const play = (e, computerTurn) => {
+    //get e coordinates if not computer turn 
+    let oldPiece; 
+    let oldX;
+    let oldY;
+    let newX;
+    let newY;
+    if (!computerTurn) {
+      oldPiece= document.querySelector("#clickedPiece");
+      oldX = parseInt(oldPiece.dataset.coords[0], 10);
+      oldY = parseInt(oldPiece.dataset.coords[1], 10);
+      newX = parseInt(e.target.dataset.coords[0], 10);
+      newY = parseInt(e.target.dataset.coords[1], 10);
+} else {oldPiece=computerTurn.start;
+oldX=parseInt(oldPiece.dataset.coords[0], 10);
+oldY = parseInt(oldPiece.dataset.coords[1], 10);
+newX=computerTurn.computerEnd[0];
+newY=computerTurn.computerEnd[1]}
     console.log("I happened");
     console.log (oldX, oldY)
       //en pasant: checks if 2 squares were advanced, sets the previous piece en pasant to false, the current piece en pasant to true.
@@ -459,7 +473,24 @@ console.log('im getting to here')
     chooseAttack.appendChild(explode)
     selectedSquare.appendChild(chooseAttack)
   }
-  return { placePieces, renderBoard, chooseSide, playerCanClick, game };
+
+  // finds the piece that'll move and the move
+  const computerAttack=(color)=>{
+    let computerPieces=document.querySelectorAll(`[data-${color}]`);
+    let i=0;
+    let foundAMove=[];
+    // while theres no possible move, keep looking computerpieces
+    while (foundAMove.length===0 && i<computerPieces.length) {
+      console.log (computerPieces[i].dataset.coords, 'im the coords of computer')
+      foundAMove=possibleMoves(computerPieces[i].dataset.coords, game);
+    i++}
+      let start=computerPieces[i-1]
+      let computerEnd=foundAMove[0]
+      console.log(computerEnd, 'Im found a move')
+      console.log(start,'Im the start piece', )
+      return {start, computerEnd}
+  }
+  return { placePieces, renderBoard, chooseSide, playerCanClick, game, play, computerAttack };
 };
 
 export default matchController;
