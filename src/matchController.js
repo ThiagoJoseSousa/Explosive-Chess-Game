@@ -230,7 +230,7 @@ newY=computerTurn.computerEnd[1]}
       gameBoard[oldX][oldY] = undefined;
       clearAttacks();
       renderBoard();
-      attackChoice(newX,newY)
+      attackChoice(newX,newY,computerTurn)
         return;
       }
     } 
@@ -455,7 +455,7 @@ console.log('im getting to here')
       changeTurn(storeColor)
   }
 
-  const attackChoice= (newX,newY) => {
+  const attackChoice= (newX,newY,computerTurn) => {
     let selectedSquare=document.querySelector(`[data-coords='${newX}${newY}']`)
     
     let chooseAttack=document.createElement('div');
@@ -469,9 +469,9 @@ console.log('im getting to here')
       //if its not a pawn promoting, turns can change!
     if (gameBoard[newX][newY].type === "pawn") {
       if (newY === 7) {
-        promotePawn.white(newX, newY);
+        promotePawn.white(newX, newY,computerTurn);
       } else if (newY === 0) {
-        promotePawn.black(newX, newY);
+        promotePawn.black(newX, newY,computerTurn);
       } else {
         changeTurn(gameBoard[newX][newY].color);
       }
