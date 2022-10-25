@@ -379,7 +379,6 @@ const possibleMoves = (coords, board) => {
         //white moving upwards
         if (y + 1 <= 7 && board.squares[x][y + 1] === undefined) {
           possibilities.push([x, y + 1]);
-
         }
         //attacking other pieces
         if (
@@ -431,7 +430,6 @@ const possibleMoves = (coords, board) => {
         //black moving downwards
         if (y - 1 >= 0 && board.squares[x][y - 1] === undefined) {
           possibilities.push([x, y - 1]);
-
         }
         //attacking other pieces
         if (

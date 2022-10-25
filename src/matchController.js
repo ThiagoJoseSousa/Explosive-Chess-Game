@@ -1,6 +1,9 @@
 import boardFactory from "./boardFactory.js";
 import possibleMoves from "./moves.js";
 const matchController = () => {
+  const placing = document.getElementById("placing");
+  const exploding = document.getElementById("exploding");
+
   let game = boardFactory();
   let gameBoard = game.squares;
   //my code would be a lot cleaner if I thought of creating lastPlayedPiece before
@@ -159,6 +162,7 @@ const matchController = () => {
     });
   };
   const play = (e, computerTurn) => {
+    placing.play();
     //get e coordinates if not computer turn
     let oldPiece;
     let oldX;
@@ -178,7 +182,6 @@ const matchController = () => {
       newX = computerTurn.computerEnd[0];
       newY = computerTurn.computerEnd[1];
     }
-
 
     //en pasant: checks if 2 squares were advanced, sets the previous piece en pasant to false, the current piece en pasant to true.
     if (
@@ -429,11 +432,32 @@ const matchController = () => {
     let x = parseInt(initialSquare[0], 10);
     let y = parseInt(initialSquare[1], 10);
 
+
+    const explosionCenter = document.querySelector(`[data-coords="${x}${y}"]`);
+
+    setTimeout(function () {
+      explosionCenter.classList.add("exploding");
+      exploding.play();
+      explosionCenter.addEventListener(
+        "transitionend",
+        () => {
+          if (deadKing) {
+            alert(`${deadKing} has lost`);
+            renderBoard();
+            return;
+          }
+          clearAttacks();
+          renderBoard();
+          changeTurn(storeColor);
+        },
+        { once: true }
+      );
+    }, 2);
     let storeColor = gameBoard[x][y].color;
     let deadKing = false;
     //the king cant explode itself, but if it takes the other king on the explosion it wins.
     if (gameBoard[x][y].type === "king") {
-      deadKing = gameBoard[x][y];
+      deadKing = gameBoard[x][y].color;
     }
 
     //keeps track if opposite king was exploded
@@ -490,16 +514,6 @@ const matchController = () => {
       }
       gameBoard[x - 1][y - 1] = undefined;
     }
-
-    //checks if king has died
-    if (deadKing) {
-      alert(`${deadKing} has lost`);
-      renderBoard();
-      return;
-    }
-    clearAttacks();
-    renderBoard();
-    changeTurn(storeColor);
   };
 
   const attackChoice = (newX, newY, computerTurn) => {
@@ -569,12 +583,12 @@ const matchController = () => {
     let foundAMove = [];
     // while theres no possible move, keep looking computerpieces
     while (foundAMove.length === 0 && i < computerPieces.length) {
-
       foundAMove = possibleMoves(computerPieces[i].dataset.coords, game);
       i++;
     }
     let start = computerPieces[i - 1];
     let computerEnd = foundAMove[foundAMove.length - 1];
+
     return { start, computerEnd };
   };
 

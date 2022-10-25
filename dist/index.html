@@ -7,6 +7,7 @@
     <title>Explosive Chess Game</title>
     <link rel="stylesheet" href="..\public\css\main.css">
     <link rel="stylesheet" href="..\public\css\board.css">
+    <link rel="icon" type="image/x-icon" href="../public/favicon.ico">
 </head>
 <body>
     <header> 
@@ -25,7 +26,7 @@
             <p>Welcome to Explosive Chess, this is a chess variant that lets you choose between normal capture or exploding when attacking.</p>
             <div id="homeimage"><img src="../public/images/home image.png" alt="A pawn holding a bomb">
                 <div id="instructions"><p ><b>Choose </b>playing either against the <b>computer</b>  or a player on the navigation bar.</p> 
-            <p>Bravery is rewarded in this game, if the king explodes himself in a way that reaches the other, he wins. </p></div>
+            <p>You can promote if not exploding, but, bravery is rewarded in this game. If the king blows himself up in a way that reaches the other, he wins. </p></div>
     </div>
         </div>
             <div class="page" data-page="2"><h2>Single player</h2>
@@ -40,6 +41,12 @@
             <div class="page" data-page="3"><h2>Multiplayer</h2>
             <p>Welcome to the multiplayer page</p></div>
         </section>
+        <audio id="placing">
+            <source src="../public/audio/placing.mp3" type="audio/mp3">
+        </audio>
+        <audio id="exploding">
+            <source src="../public/audio/exploding.mp3" type="audio/mp3">
+        </audio>
     </main>
     <script src="main.js"></script>
 </body>
