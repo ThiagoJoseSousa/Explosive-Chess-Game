@@ -435,7 +435,6 @@ const matchController = () => {
 
     const explosionCenter = document.querySelector(`[data-coords="${x}${y}"]`);
 
-    setTimeout(function () {
       explosionCenter.classList.add("exploding");
       exploding.play();
       explosionCenter.addEventListener(
@@ -452,7 +451,7 @@ const matchController = () => {
         },
         { once: true }
       );
-    }, 2);
+    
     let storeColor = gameBoard[x][y].color;
     let deadKing = false;
     //the king cant explode itself, but if it takes the other king on the explosion it wins.
@@ -521,60 +520,64 @@ const matchController = () => {
     if (computerTurn) {
       let random = Math.round(Math.random());
       if (random) {
-        explodeSquares(undefined, computerTurn);
+        setTimeout( () => {explodeSquares(undefined, computerTurn)},2);
+        
+      } else {
+
+        clearAttacks();
+        renderBoard();
+        //if its not a pawn promoting, turns can change!
+        if (gameBoard[newX][newY].type === "pawn") {
+          if (newY === 7) {
+            promotePawn.white(newX, newY, computerTurn);
+          } else if (newY === 0) {
+            promotePawn.black(newX, newY, computerTurn);
+          } else {
+            changeTurn(gameBoard[newX][newY].color);
+          }
+        } else {
+          changeTurn(gameBoard[newX][newY].color);
+        }
         return;
       }
-      clearAttacks();
-      renderBoard();
-      //if its not a pawn promoting, turns can change!
-      if (gameBoard[newX][newY].type === "pawn") {
-        if (newY === 7) {
-          promotePawn.white(newX, newY, computerTurn);
-        } else if (newY === 0) {
-          promotePawn.black(newX, newY, computerTurn);
-        } else {
-          changeTurn(gameBoard[newX][newY].color);
-        }
-      } else {
-        changeTurn(gameBoard[newX][newY].color);
+    } else {
+      
+      
+      let selectedSquare = document.querySelector(
+        `[data-coords='${newX}${newY}']`
+        );
+        
+        let chooseAttack = document.createElement("div");
+        chooseAttack.classList.add("attackChoice");
+        
+        let attack = document.createElement("p");
+        attack.textContent = "Normal attack";
+        attack.addEventListener("click", () => {
+          clearAttacks();
+          renderBoard();
+          //if its not a pawn promoting, turns can change!
+          if (gameBoard[newX][newY].type === "pawn") {
+            if (newY === 7) {
+              promotePawn.white(newX, newY, computerTurn);
+            } else if (newY === 0) {
+              promotePawn.black(newX, newY, computerTurn);
+            } else {
+              changeTurn(gameBoard[newX][newY].color);
+            }
+          } else {
+            changeTurn(gameBoard[newX][newY].color);
+          }
+        });
+        
+        let explode = document.createElement("p");
+        explode.textContent = "Explode";
+        explode.addEventListener("click", explodeSquares);
+        
+        chooseAttack.appendChild(attack);
+        chooseAttack.appendChild(explode);
+        selectedSquare.appendChild(chooseAttack);
       }
-      return;
-    }
-
-    let selectedSquare = document.querySelector(
-      `[data-coords='${newX}${newY}']`
-    );
-
-    let chooseAttack = document.createElement("div");
-    chooseAttack.classList.add("attackChoice");
-
-    let attack = document.createElement("p");
-    attack.textContent = "Normal attack";
-    attack.addEventListener("click", () => {
-      clearAttacks();
-      renderBoard();
-      //if its not a pawn promoting, turns can change!
-      if (gameBoard[newX][newY].type === "pawn") {
-        if (newY === 7) {
-          promotePawn.white(newX, newY, computerTurn);
-        } else if (newY === 0) {
-          promotePawn.black(newX, newY, computerTurn);
-        } else {
-          changeTurn(gameBoard[newX][newY].color);
-        }
-      } else {
-        changeTurn(gameBoard[newX][newY].color);
-      }
-    });
-
-    let explode = document.createElement("p");
-    explode.textContent = "Explode";
-    explode.addEventListener("click", explodeSquares);
-
-    chooseAttack.appendChild(attack);
-    chooseAttack.appendChild(explode);
-    selectedSquare.appendChild(chooseAttack);
-  };
+      };
 
   // finds the piece that'll move and the move
   const computerAttack = (color) => {
