@@ -438,7 +438,7 @@ const matchController = () => {
       explosionCenter.classList.add("exploding");
       exploding.play();
       explosionCenter.addEventListener(
-        "transitionend",
+        "animationend",
         () => {
           if (deadKing) {
             alert(`${deadKing} has lost`);
@@ -520,7 +520,7 @@ const matchController = () => {
     if (computerTurn) {
       let random = Math.round(Math.random());
       if (random) {
-        setTimeout( () => {explodeSquares(undefined, computerTurn)},2);
+        explodeSquares(undefined, computerTurn)
         
       } else {
 

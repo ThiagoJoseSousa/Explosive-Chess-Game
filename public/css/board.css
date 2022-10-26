@@ -6,9 +6,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition-property: transform,border;
-    transition-timing-function: cubic-bezier(0,-0.14,0,.97);
-    transition-duration: 1s; 
 
   }
   .boardSquare img {
@@ -104,14 +101,16 @@ td .active {
   border-color: black;
 }
 
-.exploding {
-  transform: scale(3);
+@keyframes exploding {
+  0%{border-width: 10px;
+    border-radius: 50%;}
+  100%{transform: scale(3);
   border-color: rgb(255, 2, 2);
   border-width: 10px;
   border-radius: 50%;
   background: orange;
   overflow:hidden;
-
+  }
 }
 .exploding img {
   display:none;
@@ -121,3 +120,10 @@ td .active {
   max-height:200px;
   max-width: 200px;
 }
+
+.exploding {
+  animation-name: exploding;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(0,-0.14,0,.97);
+}
+
